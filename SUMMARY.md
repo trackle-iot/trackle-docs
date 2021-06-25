@@ -8,10 +8,10 @@
 * [Prodotto](concetti-generali/prodotto.md)
 * [Utenti](concetti-generali/utenti.md)
 
-## LIBRERIA
+## LIBRERIA FIRMWARE
 
-* [Panoramica](libreria/panoramica.md)
-* [Installazione](libreria/installazione.md)
-* [Primo utilizzo](libreria/primo-utilizzo.md)
-* [Funzionalità cloud](libreria/funzionalita-cloud.md)
+* [Panoramica](libreria-firmware/panoramica.md)
+* [Installazione](libreria-firmware/installazione.md)
+* [Primo utilizzo](libreria-firmware/primo-utilizzo.md)
+* [Funzionalità cloud](libreria-firmware/funzionalita-cloud.md)
 
