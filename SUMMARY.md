@@ -15,7 +15,7 @@
 * [Primo utilizzo](libreria-firmware/primo-utilizzo.md)
 * [Funzionalità cloud](libreria-firmware/funzionalita-cloud.md)
 
-## CLOUD
+## CLOUD API
 
-* [Panoramica](cloud/panoramica.md)
+* [Panoramica](cloud-api/panoramica.md)
 
