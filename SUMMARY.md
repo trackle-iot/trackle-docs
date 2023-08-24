@@ -8,14 +8,24 @@
 * [Prodotto](concetti-generali/prodotto.md)
 * [Utenti](concetti-generali/utenti.md)
 
-## LIBRERIA FIRMWARE
+## LIBRARY
 
-* [Panoramica](libreria-firmware/panoramica.md)
-* [Installazione](libreria-firmware/installazione.md)
-* [Primo utilizzo](libreria-firmware/primo-utilizzo.md)
-* [Funzionalità cloud](libreria-firmware/funzionalita-cloud.md)
+* [Panoramica](library/panoramica.md)
+* [Primo utilizzo](library/primo-utilizzo.md)
+* [Configurazione](library/configurazione.md)
+* [Funzionalità cloud](library/funzionalita-cloud.md)
+* [Aggiornamenti OTA](library/aggiornamenti-ota.md)
+* [Diagnostica](library/diagnostica.md)
 
-## CLOUD API
+## CLOUD
 
-* [Panoramica](cloud-api/panoramica.md)
+* [Panoramica](cloud/panoramica.md)
+* [API REST](cloud/api-rest.md)
+* [Webhook](cloud/webhook.md)
+* [Aggiornamenti firmware OTA](cloud/aggiornamenti-firmware-ota.md)
 
+## CONSOLE
+
+* [Panoramica](console/panoramica.md)
+* [Sviluppatori](console/sviluppatori.md)
+* [Prodotti](console/prodotti.md)
