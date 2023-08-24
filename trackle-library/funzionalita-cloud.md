@@ -55,25 +55,24 @@ Ci sono cinque tipi di dato supportati:
 * `string` (la massima lunghezza è di 1200 bytes)
 * `json` (la massima lunghezza è di 1200 bytes)
 
-## Trackle.getFn()
+## Trackle.get()
 
 Espone una _funzione che ritorna un valore_ alle API Cloud che può essere chiamata attraverso una richiesta  `GET /v1/devices/{DEVICE_ID}/{REQUEST}` . Ritorna il valore `true`quando la funzione è stata registrata.
 
-`Trackle.getFn` permette di eseguire codice sul dispositivo e ottenere una risposta attraverso una richiesta alle API Cloud. Tipicamente si utilizza questa funzionalità quando si vuole ottenere un valore che deve essere calcolato al momento della richiesta in base ad un parametro fornito, per es. interrogare un certo slave su bus per ritornare uno specifico valore.
+`Trackle.get` permette di eseguire codice sul dispositivo e ottenere una risposta attraverso una richiesta alle API Cloud. Si utilizza questa funzionalità quando si vuole ottenere un valore raw oppure un valore che deve essere calcolato al momento della richiesta in base ad un parametro fornito, per es. interrogare un certo slave su bus per ritornare uno specifico valore.
 
 {% tabs %}
 {% tab title="C" %}
 ```c
+double tempC = 0;
+bool success = trackleGet(c, "temp", tempC, VAR_DOUBLE);
 ```
 {% endtab %}
 
 {% tab title="C ++" %}
 ```cpp
-```
-{% endtab %}
-
-{% tab title="Typescript" %}
-```typescript
+double tempC = 0;
+Trackle.get("temp", tempC);
 ```
 {% endtab %}
 {% endtabs %}
@@ -85,7 +84,7 @@ Per registrare una funzione, l'utente deve fornire una chiave `getFuncKey`, che 
 * `DOUBLE`
 * `STRING` (la massima lunghezza è di 622 bytes)
 
-Possono essere registrate fino a 20 tra variabili _get_ e funzioni _getFn_ ed il nome di ognuna ha il limite massimo di 64 caratteri.
+Possono essere registrate fino a 20 richieste di dati ed il nome di ognuna ha il limite massimo di 64 caratteri.
 
 ## Trackle.post()
 

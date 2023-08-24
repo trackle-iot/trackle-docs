@@ -1,7 +1,5 @@
 # Primo utilizzo
 
-## Libreria C/C++ agnostica
-
 Per iniziare ti invitiamo a dare un'occhiata al repository GitHub della Trackle Library dove mettiamo a disposizione la documentazione aggiornata della libreria e di come installarla ed utilizzarla:
 
 {% embed url="https://github.com/trackle-iot/trackle-library-cpp#trackle-library" %}
@@ -9,8 +7,6 @@ Per iniziare ti invitiamo a dare un'occhiata al repository GitHub della Trackle 
 ## Progetti d'esempio
 
 Puoi partire anche da un progetto d'esempio scegliendo tra i nostri _boilerplate_ creati per differenti piattaforme hardware / framework_:_
-
-
 
 ### EspressIf ESP-IDF
 
