@@ -1,8 +1,12 @@
-# Introduzione
+---
+description: Benvenuto nella documentazione di Trackle
+---
+
+# 😊 Introduzione
 
 **Trackle** è la **piattaforma IoT All-Inclusive** che ridefinisce il modo in cui le aziende possono affrontare l'Internet of Things (IoT), offrendo strumenti dedicati alla gestione dei dispositivi IoT, alla sicurezza, all'automazione e alla creazione di applicazioni.
 
-Con Trackle **chiunque può connettere il proprio hardware al cloud** e creare soluzioni innovative, applicazioni web e mobile per analizzare i dati in tempo reale dai dispositivi, controllarli da remoto da qualsiasi parte del mondo, ricevere notifiche e molto altro.
+Con Trackle **chiunque può connettere il proprio hardware al cloud** e creare soluzioni innovative, applicazioni web e mobile per analizzare i dati in tempo reale dai dispositivi, controllarli da remoto da qualsiasi parte del mondo, ricevere notifiche e molto altro.&#x20;
 
 ## Componenti di Trackle
 

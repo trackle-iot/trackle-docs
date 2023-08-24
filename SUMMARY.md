@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Introduzione](README.md)
+* [😊 Introduzione](README.md)
 
 ## CONCETTI GENERALI
 
@@ -8,24 +8,24 @@
 * [Prodotto](concetti-generali/prodotto.md)
 * [Utenti](concetti-generali/utenti.md)
 
-## LIBRARY
+## TRACKLE LIBRARY
 
-* [Panoramica](library/panoramica.md)
-* [Primo utilizzo](library/primo-utilizzo.md)
-* [Configurazione](library/configurazione.md)
-* [Funzionalità cloud](library/funzionalita-cloud.md)
-* [Aggiornamenti OTA](library/aggiornamenti-ota.md)
-* [Diagnostica](library/diagnostica.md)
+* [Panoramica](trackle-library/panoramica.md)
+* [Primo utilizzo](trackle-library/primo-utilizzo.md)
+* [Configurazione](trackle-library/configurazione.md)
+* [Funzionalità cloud](trackle-library/funzionalita-cloud.md)
+* [Aggiornamenti OTA](trackle-library/aggiornamenti-ota.md)
+* [Diagnostica](trackle-library/diagnostica.md)
 
-## CLOUD
+## TRACKLE CLOUD
 
-* [Panoramica](cloud/panoramica.md)
-* [API REST](cloud/api-rest.md)
-* [Webhook](cloud/webhook.md)
-* [Aggiornamenti firmware OTA](cloud/aggiornamenti-firmware-ota.md)
+* [Panoramica](trackle-cloud/panoramica.md)
+* [API REST](trackle-cloud/api-rest.md)
+* [Webhook](trackle-cloud/webhook.md)
+* [Aggiornamenti firmware OTA](trackle-cloud/aggiornamenti-firmware-ota.md)
 
-## CONSOLE
+## TRACKLE CONSOLE
 
-* [Panoramica](console/panoramica.md)
-* [Sviluppatori](console/sviluppatori.md)
-* [Prodotti](console/prodotti.md)
+* [Panoramica](trackle-console/panoramica.md)
+* [Sviluppatori](trackle-console/sviluppatori.md)
+* [Prodotti](trackle-console/prodotti.md)
