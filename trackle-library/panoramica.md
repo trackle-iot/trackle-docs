@@ -10,7 +10,7 @@ Trackle Library è una **libreria software C/C++** che consente agli sviluppator
 
 ### Hardware agnostic
 
-Trackle Library è **hardware agnostica**. Indipendentemente dal tipo di dispositivo che vuoi connettere, la nostra libreria si adatta senza sforzi, offrendoti un'**interoperabilità senza limiti e** semplificando il processo di implementazione.
+Trackle Library è **hardware agnostica**. Indipendentemente dal tipo di dispositivo che vuoi connettere, la nostra libreria si adatta senza sforzi, offrendoti un'**interoperabilità senza limiti e** semplificando il processo di implementazione.&#x20;
 
 ### Comunicazione sicura
 
@@ -24,7 +24,7 @@ Alla base di Trackle c'è una **comunicazione sicura e affidabile**. La nostra *
 
 Trackle Library mette a disposizione degli sviluppatori **un'API ricca di funzionalità**, che consente di scrivere applicazioni IoT per il dispositivo, aprendo le porte a un mondo di innovazione e creatività.
 
-### Aggiornamento firmware OTA
+### Aggiornamenti OTA
 
 Attraverso gli aggiornamenti OTA, hai la capacità di **implementare nuove funzionalità software** in un prodotto anche dopo che un dispositivo è stato distribuito sul campo. Questo ti permette di **migliorare costantemente le sue funzionalità** nel corso del tempo e di correggere eventuali bug, il tutto senza dover ricorrere a richiami fisici.
 

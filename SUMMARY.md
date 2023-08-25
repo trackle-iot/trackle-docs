@@ -22,9 +22,10 @@
 ## TRACKLE CLOUD
 
 * [Panoramica](trackle-cloud/panoramica.md)
-* [API REST](trackle-cloud/api-rest.md)
+* [Cloud API](trackle-cloud/cloud-api.md)
 * [Automazioni](trackle-cloud/automazioni.md)
 * [Aggiornamenti firmware OTA](trackle-cloud/aggiornamenti-firmware-ota.md)
+* [Sicurezza](trackle-cloud/sicurezza.md)
 
 ## TRACKLE CONSOLE
 
