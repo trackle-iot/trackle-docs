@@ -1,3 +1,17 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Funzionalità cloud
 
 ## Trackle.get()
@@ -705,214 +719,189 @@ Lo stesso risultato si potrebbe ottenere senza utilizzare le _prop_ in questo mo
 * inviando un _publish_ ad ogni modifica di ogni proprietà per avere gli aggiornamenti in tempo reale
 * creando una _post_ che scrive le proprietà per comandare il dispositivo da remoto
 
-## Trackle.connect()
+## Eventi
 
-Connette il Dispositivo al Cloud. Restituisce il valore `0` se non ci sono errori, un valore `<0` in caso di errore.
+La libreria permette agli sviluppatori di definire il comportamento del firmware allo scatenarsi di specifici eventi per es. dopo aver inviato un messaggio al cloud.&#x20;
 
-{% tabs %}
-{% tab title="C" %}
-```c
-int main()
-{
-  while(1) {
-    if (TrackleConnected(c) == false) {
-      TrackleConnect(c);
-    }
-    TrackleLoop(c);
-  }
-  return 0;
-}
-```
-{% endtab %}
+### C / C++
 
-{% tab title="C ++" %}
-```cpp
-int main()
-{
-  while(1) {
-    if (Trackle.connected() == false) {
-      Trackle.connect();
-    }
-    Trackle.loop();
-  }
-  return 0;
-}
-```
-{% endtab %}
+La libreria C / C++ gestisce questa funzionalità attraverso l'implementazione di callback in particolare:
 
-{% tab title="Typescript" %}
-```typescript
-try {
-  Trackle.connect();
-} catch (err) {
-  console.error(err.message);
-}
-```
-{% endtab %}
-{% endtabs %}
-
-## Trackle.connectionCompleted()
-
-Questo metodo va chiamato quando il socket è stato creato correttamente, in modo da consentire alla libreria di continuare la procedura di collegamento al Cloud.
+* **sendPublishCallback**: chiamata ogni volta in cui viene eseguito un [**publish**](broken-reference). Come parametri, oltre al nome dell'evento e al contenuto, viene passata una chiave (che può essere usata come codice del messaggio) e un booleano che specifica se il messaggio è stato effettivamente inviato;
 
 {% tabs %}
 {% tab title="C" %}
 ```c
-int connect_cb_udp(const char* server_address, int server_port) {
+void callback_send_publish(const char *eventName, const char *data, int ttl, string key, bool published) {
+    printf("Event: %s, key: %s", (published ? "cache" : "republish"), key.c_str());
     
-    .....
-    
-    int r = setsockopt(cloud_socket, SOL_SOCKET, SO_RCVTIMEO,(struct timeval *)&socket_timeout, sizeof(struct timeval));
+    if(offline_db) {
+        printf("Saving event in db %s, key: %s", (published ? "cache" : "republish"), key.c_str());
 
-    // connect to server
-    if(connect(cloud_socket, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
-    {
-      printf("\n Error : Connect Failed \n");
+        string name(eventName);
+        string content(data);
+        string db_data ="{\"event\": \"" + name + "\", \"data\": " + content + ", \"key\": \"" + key + "\" , \"ttl\": " + to_string(ttl) + " }";
+
+        if(published) // salvo in cahce
+            offline_db->save(0, key, db_data);
+        else // salvo in db offline per reinviare
+            offline_db->save(1, key, db_data);
     }
-    
-    TrackleConnectionCompleted(c);
-    return 1;
 }
+
+iotreadySetSendPublishCallback(c, callback_send_publish);
 ```
 {% endtab %}
 
 {% tab title="C++" %}
 ```cpp
-int connect_cb_udp(const char* server_address, int server_port) {
+void callback_send_publish(const char *eventName, const char *data, int ttl, string key, bool published) {
+    printf("Event: %s, key: %s", (published ? "cache" : "republish"), key.c_str());
     
-    .....
-    
-    int r = setsockopt(cloud_socket, SOL_SOCKET, SO_RCVTIMEO,(struct timeval *)&socket_timeout, sizeof(struct timeval));
+    if(offline_db) {
+        printf("Saving event in db %s, key: %s", (published ? "cache" : "republish"), key.c_str());
 
-    // connect to server
-    if(connect(cloud_socket, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
-    {
-      printf("\n Error : Connect Failed \n");
+        string name(eventName);
+        string content(data);
+        string db_data ="{\"event\": \"" + name + "\", \"data\": " + content + ", \"key\": \"" + key + "\" , \"ttl\": " + to_string(ttl) + " }";
+
+        if(published) // salvo in cahce
+            offline_db->save(0, key, db_data);
+        else // salvo in db offline per reinviare
+            offline_db->save(1, key, db_data);
     }
-    
-    Trackle.connectionCompleted();
-    return 1;
 }
+
+Iotready.setSendPublishCallback(callback_send_publish);
 ```
 {% endtab %}
 {% endtabs %}
 
-## Trackle.disconnect()
-
-Disconnette il Dispositivo dal Cloud.&#x20;
+* **completedPublishCallback**: chiamata alla ricezione dell'ack al publish o se il publish fallisce per timeout;
 
 {% tabs %}
 {% tab title="C" %}
 ```c
-int counter = 10000;
+void callback_complete_publish(int error, const void* data, void* callbackData, void* reserved) {
+    uint32_t *b = (uint32_t*)callbackData;
+    char str[20]; snprintf(str, sizeof str, "%lu", (unsigned long)b);
+    string del_key(str);
 
-bool needConnection() {
-  --counter;
-  if (0 == counter)
-    counter = 10000;
-  return (2000 > counter);
-}
-
-int main() {
-  while(1) {
-    if (needConnection()) {
-      if (!TrackleConnected(c))
-        TrackleConnect(c);
+    if(error == 0){
+        printf("ACK received from cloud: %s", del_key.c_str());
+        ...
     } else {
-      if (TrackleConnected(c))
-        TrackleDisconnect(c);
+        printf("ACK not received from cloud: %s", del_key.c_str());
+        if(error == SYSTEM_ERROR_TIMEOUT) {
+            printf("Publish TIMEOUT: %s", del_key.c_str());
+        } else {
+            printf("Publish UNDEFINED ERROR: %s", del_key.c_str());
+        }
     }
-    TrackleLoop(c);
-  }
-  return 0;
 }
+
+IotreadySetCompletedPublishCallback(c, callback_complete_publish);
 ```
 {% endtab %}
 
-{% tab title="C ++" %}
+{% tab title="C++" %}
 ```cpp
-int counter = 10000;
+void callback_complete_publish(int error, const void* data, void* callbackData, void* reserved) {
+    uint32_t *b = (uint32_t*)callbackData;
+    char str[20]; snprintf(str, sizeof str, "%lu", (unsigned long)b);
+    string del_key(str);
 
-bool needConnection() {
-  --counter;
-  if (0 == counter)
-    counter = 10000;
-  return (2000 > counter);
-}
-
-int main() {
-  while(1) {
-    if (needConnection()) {
-      if (!Trackle.connected())
-        Trackle.connect();
+    if(error == 0){
+        printf("ACK received from cloud: %s", del_key.c_str());
+        ...
     } else {
-      if (Trackle.connected())
-        Trackle.disconnect();
+        printf("ACK not received from cloud: %s", del_key.c_str());
+        if(error == SYSTEM_ERROR_TIMEOUT) {
+            printf("Publish TIMEOUT: %s", del_key.c_str());
+        } else {
+            printf(Publish UNDEFINED ERROR: %s", del_key.c_str());
+        }
     }
-    Trackle.loop();
-  }
-  returno 0;
-}
-```
-{% endtab %}
-
-{% tab title="Typescript" %}
-```typescript
-const counter = 100;
-
-const needConnection = () => {
-  counter-=1;
-  if (counter === 0)
-    counter = 100;
-  return (counter < 20);
 }
 
-setInterval(() => {
-  if (needConnection()) {
-    if (!Trackle.connected())
-        Trackle.connect();
-  } else {
-    if (Trackle.connected())
-        Trackle.disconnect();
-  }
-}, 1000);
+Iotready.setCompletedPublishCallback(callback_complete_publish);
 ```
 {% endtab %}
 {% endtabs %}
 
-{% hint style="warning" %}
-Quando il dispositivo non è connesso, diverse funzionalità come gli aggiornamenti OTA, leggere `Trackle.get` e chiamare `Trackle.post` non sono disponibili.
-{% endhint %}
-
-## Trackle.connected()
-
-Ritorno `true` se il Dispositivo è connasso al Cloud, altrimenti `false`&#x20;
-
-## Trackle.setKeepalive()
-
-Imposta la durate tra i messaggi keepalive. Questi messaggi sono utilizzati per mantenere attiva la connessione con il Cloud.
+* **signalCallback**: chiamata quando è ricevuto un messaggio di tipo **signal** dal Cloud. Questa funzione è utile per identificare un dispositivo, per esempio, attraverso l'accensione di un led;
 
 {% tabs %}
 {% tab title="C" %}
 ```c
-TrackleSetKeepalive(c, 1 * 30);    // send a ping every 30 seconds
+void signal_cb(bool on, unsigned int param, void* reserved) {
+    printf("signal_cb: %d %d\n", on, param);
+}
+
+iotreadySetSignalCallback(c, signal_cb);
 ```
 {% endtab %}
 
-{% tab title="C ++" %}
+{% tab title="C++" %}
 ```cpp
-Trackle.setKeepAlive(1 * 30);    // send a ping every 30 seconds
-```
-{% endtab %}
+void signal_cb(bool on, unsigned int param, void* reserved) {
+    printf("signal_cb: %d %d\n", on, param);
+}
 
-{% tab title="Typescript" %}
-```typescript
-Trackle.setKeepalive(1 * 30); // send a ping every 30 seconds
+Iotready.setSignalCallback(signal_cb);
 ```
 {% endtab %}
 {% endtabs %}
 
-In UDP, il keepalive è utilizzato per implementare "UDP hole punching", ovvero aiuta a mantenera aperta la connessione tra Dispositivo e Cloud. Quando due dispositivi comunicano tra loro, viene creato un port forwarding termporaneo per permettere il passaggio di pacchetti in entrambe le direzioni. Essendo le risorse di rete finite, tutti i canali non utilizzati vengono chiusi e cancellati. Questo farebbe si che un dispositivo non sia più raggiungibile dal Cloud dopo circa 30 secondi.
+* **systemTimeCallback**: chiamata quando viene ricevuto un messaggio di tipo system time dal Cloud (comunicazione orario del server).
+
+{% tabs %}
+{% tab title="C" %}
+```c
+void system_time_cb(time_t time, unsigned int param, void*)
+{
+    printf("Server time is %lld\n", (long long)time);
+}
+
+iotreadySetSystemTimeCallback(c, system_time_cb);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+void system_time_cb(time_t time, unsigned int param, void*)
+{
+    printf("Server time is %lld\n", (long long)time);
+}
+
+Iotready.setSystemTimeCallback(system_time_cb);
+```
+{% endtab %}
+{% endtabs %}
+
+* **setRandomCallback**: la libreria di cifratura necessità di una funzione di generazione di numeri random. Se non definita alcuna callback viene utilizzata la funziona rand() che ritorna un numero pseudo-casuale. Se l'hardware su cui viene utilizata la libreria dispone di metodi più sicuri per la generazione di un numero random, è possibile configurarli attraverso questa callback.
+
+{% tabs %}
+{% tab title="C" %}
+```c
+uint32_t random_callback() {
+    return rand();
+}
+
+iotreadySetRandomCallback(c, random_callback);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+uint32_t random_callback() {
+    return rand();
+}
+
+iotready.setRandomCallback(random_callback);
+```
+{% endtab %}
+{% endtabs %}
 
 ## Trackle.setClaimCode()
 
@@ -938,53 +927,3 @@ Trackle.setClaimCode("qSHVg4T111RCJ03i0N.....");
 {% endtab %}
 {% endtabs %}
 
-## Trackle.loop()
-
-Esegue il  background loop. Solo per C / C++.
-
-`Trackle.loop()` controlla se ci sono messaggi dal Cloud e nel caso li processa. Gestisce anche l'invio dei keep-alive al cloud; se non viene chiamata abbastanza frequentemente, la connessione con il Cloud verrà persa.
-
-{% tabs %}
-{% tab title="C " %}
-```c
-int main() {
-  while (1) {
-    TrackleLoop(c);
-    redundantLoop();
-  }
-}
-
-void redundantLoop() {
-  Serial.println("Well that was unnecessary.");
-}
-```
-{% endtab %}
-
-{% tab title="C++" %}
-```cpp
-int main() {
-  while (1) {
-    Trackle.loop();
-    applicationLoop();
-  }
-}
-
-void applicationLoop() {
-  ...
-}
-```
-{% endtab %}
-{% endtabs %}
-
-`Trackle.loop()` è una funzione che blocca l'esecuzione del firmware per alcuni millisecondi. Più frequentemente viene chiamata, più il tempo di esecuzione si riduce e più il dispositivo risponde con velocità e la connessione con il Cloud resta aperta.
-
-## Trackle.forceTcpProtocol()
-
-Cambia il protocollo di comunicazione passando da UDP con DTLS a TCP con cifratura dei pacchetti. \
-Solo per NodeJS.
-
-Utile in situazioni in cui è preferibile avere una connessione socket sempre attiva. Non preferibile quando si utilizzano reti mobile perché viene generato molto più traffico.&#x20;
-
-{% hint style="warning" %}
-La chiave privata del dispositivo e la chiave pubblica del server devono essere cambiate per poter connettere un dispositivo tramite protocollo TCP.
-{% endhint %}
