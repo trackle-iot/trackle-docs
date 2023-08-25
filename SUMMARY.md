@@ -22,7 +22,12 @@
 ## TRACKLE CLOUD
 
 * [Panoramica](trackle-cloud/panoramica.md)
-* [Cloud API](trackle-cloud/cloud-api.md)
+* [Cloud API](trackle-cloud/cloud-api/README.md)
+  * [Limiti alle richieste](trackle-cloud/cloud-api/limiti-alle-richieste.md)
+  * [Autenticazione](trackle-cloud/cloud-api/autenticazione.md)
+  * [Client OAuth](trackle-cloud/cloud-api/client-oauth.md)
+  * [Dispositivi](trackle-cloud/cloud-api/dispositivi.md)
+  * [Eventi](trackle-cloud/cloud-api/eventi.md)
 * [Automazioni](trackle-cloud/automazioni.md)
 * [Aggiornamenti firmware OTA](trackle-cloud/aggiornamenti-firmware-ota.md)
 * [Sicurezza](trackle-cloud/sicurezza.md)
