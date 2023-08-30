@@ -29,7 +29,6 @@ int main(int argc, char *argv[]) {
     // Autenticazione
     trackleSetDeviceId(trackle_s, DEVICE_ID);
     trackleSetKeys(trackle_s, PRIVATE_KEY);
-    trackleSetEnabled(trackle_s, true);
     // Configurazione del socket di comunicazione 
     trackleSetSendCallback(trackle_s, send_cb_udp);
     trackleSetReceiveCallback(trackle_s, receive_cb_udp);
@@ -62,7 +61,6 @@ int main(int argc, char *argv[]) {
     // Autenticazione
     trackle.setDeviceId(DEVICE_ID);
     trackle.setKeys(PRIVATE_KEY);
-    trackle.setEnabled(true);
     // Configurazione del socket di comunicazione 
     trackle.setSendCallback(send_cb_udp);
     trackle.setReceiveCallback(receive_cb_udp);

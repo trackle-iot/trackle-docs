@@ -22,5 +22,7 @@ Puoi configurare azioni personalizzate basate su determinati tipi di messaggi in
 
 ### Sicurezza
 
+Trackle nasce _Secure by design_ così ti puoi concentrare sul tuo progetto IoT senza preoccuparti.
+
 
 

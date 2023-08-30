@@ -16,6 +16,7 @@
 * [Primo utilizzo](trackle-library/primo-utilizzo.md)
 * [Configurazione](trackle-library/configurazione.md)
 * [Funzionalità cloud](trackle-library/funzionalita-cloud.md)
+* [Data Store](trackle-library/data-store.md)
 * [Aggiornamenti OTA](trackle-library/aggiornamenti-ota.md)
 * [Diagnostica](trackle-library/diagnostica.md)
 

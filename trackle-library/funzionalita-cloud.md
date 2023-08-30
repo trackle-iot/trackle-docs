@@ -209,7 +209,7 @@ Chiamare `Trackle.publish()` quando la connessione al Cloud non è stabilita non
 Le variabili di tipo String devono essere UTF-8 encoded. Non puoi inviare data binari o altre tipologie di caratteri tipo ISO-8859-1. Se hai la necessità di inviare dati binari, puoi codificarli un un formato text-based tipo [Base64](https://github.com/rickkas7/Base64RK).
 
 {% hint style="info" %}
-Al momento un dispositivo può pubblicare con un rate di circa 1 evento / sec, con picchi fino a 4 messaggi al secondo. Recuperare l'invio di 4 messagi impiegherà 4 secondi**.**
+Al momento un dispositivo può pubblicare con un rate di circa 1 evento / sec, con picchi fino a 4 messaggi al secondo. Recuperare l'invio di 4 messaggi impiegherà 4 secondi**.**
 {% endhint %}
 
 {% hint style="warning" %}
