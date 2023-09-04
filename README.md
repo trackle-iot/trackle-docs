@@ -20,7 +20,7 @@ Si parte dalla libreria C/C++, _hardware agnostica,_ che **integra le** [**funzi
 
 ### Trackle Cloud
 
-Nel cuore di Trackle c'è **un'infrastruttura Cloud, progettata per scalare con il tuo business**, che alimenta i micro servizi specifici per la comunicazione, la gestione dei dispositivi, la sicurezza, il monitoraggio, gli [aggiornamenti OTA](trackle-cloud/aggiornamenti-firmware-ota.md), le [automazioni](trackle-cloud/automazioni.md) e l'integrazione tramite [API REST](trackle-cloud/cloud-api/) potenti per **modellare l'esperienza IoT in base alle tue esigenze specifiche**.
+Nel cuore di Trackle c'è **un'infrastruttura Cloud, progettata per scalare con il tuo business**, che alimenta i micro servizi specifici per la comunicazione, la gestione dei dispositivi, la sicurezza, il monitoraggio, gli [aggiornamenti OTA](trackle-cloud/aggiornamenti-firmware-ota.md), le [automazioni](trackle-cloud/integrazioni.md) e l'integrazione tramite [API REST](trackle-cloud/cloud-api/) potenti per **modellare l'esperienza IoT in base alle tue esigenze specifiche**.
 
 ### Trackle Console
 

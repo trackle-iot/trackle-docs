@@ -29,7 +29,7 @@
   * [Client OAuth](trackle-cloud/cloud-api/client-oauth.md)
   * [Dispositivi](trackle-cloud/cloud-api/dispositivi.md)
   * [Eventi](trackle-cloud/cloud-api/eventi.md)
-* [Automazioni](trackle-cloud/automazioni.md)
+* [Integrazioni](trackle-cloud/integrazioni.md)
 * [Aggiornamenti firmware OTA](trackle-cloud/aggiornamenti-firmware-ota.md)
 * [Sicurezza](trackle-cloud/sicurezza.md)
 
