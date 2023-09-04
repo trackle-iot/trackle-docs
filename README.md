@@ -26,4 +26,4 @@ Nel cuore di Trackle c'è **un'infrastruttura Cloud, progettata per scalare con 
 
 <figure><img src=".gitbook/assets/Schermata 2023-08-24 alle 19.01.48.png" alt=""><figcaption></figcaption></figure>
 
-La nostra avanzata console di gestione ti dà l'accesso totale ai tuoi dispositivi IoT. Organizza, monitora e **gestisci la tua flotta di dispositivi con facilità**. La console offre [strumenti per sviluppatori](trackle-console/sviluppatori.md) e il controllo completo dell'intera rete di dispositivi, suddivisa in gruppi, [prodotti](trackle-console/prodotti.md) e organizzazioni con funzionalità avanzate di debug, logging a analisi dello stato di salute.
+La nostra avanzata console di gestione ti dà l'accesso totale ai tuoi dispositivi IoT. Organizza, monitora e **gestisci la tua flotta di dispositivi con facilità**. La console offre [strumenti per sviluppatori](broken-reference) e il controllo completo dell'intera rete di dispositivi, suddivisa in gruppi, [prodotti](broken-reference) e organizzazioni con funzionalità avanzate di debug, logging a analisi dello stato di salute.

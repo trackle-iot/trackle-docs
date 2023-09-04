@@ -7,7 +7,6 @@
 * [Dispositivo](concetti-generali/dispositivo.md)
 * [Prodotto](concetti-generali/prodotto.md)
 * [Utenti](concetti-generali/utenti.md)
-* [Customer](concetti-generali/customer.md)
 * [Organizzazione](concetti-generali/organizzazione.md)
 
 ## TRACKLE LIBRARY
@@ -32,9 +31,3 @@
 * [Integrazioni](trackle-cloud/integrazioni.md)
 * [Aggiornamenti firmware OTA](trackle-cloud/aggiornamenti-firmware-ota.md)
 * [Sicurezza](trackle-cloud/sicurezza.md)
-
-## TRACKLE CONSOLE
-
-* [Panoramica](trackle-console/panoramica.md)
-* [Sviluppatori](trackle-console/sviluppatori.md)
-* [Prodotti](trackle-console/prodotti.md)

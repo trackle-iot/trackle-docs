@@ -1,6 +1,0 @@
----
-description: Trackle Console
----
-
-# Panoramica
-
