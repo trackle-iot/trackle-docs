@@ -20,8 +20,6 @@ Il Data Store può essere scritto dalle App, attraverso le API REST, anche quand
 
 Un Data Store è composto da una o più chiavi, che chiamiamo _proprietà,_ definite a livello di Prodotto. Ogni dispositivo può leggere e scrivere solo le chiavi configurate nel Data Store attraverso la Console o tramite le API REST.
 
-\#define LEDGER\_MAX\_DATA\_SIZE 16384
-
 ## Trackle.writeStore()
 
 write store(json, REPLACE | MERGE)
@@ -34,9 +32,9 @@ fa una scrittura in put (mode replace) o in patch (mode merge) dello store cloud
 
 ## Trackle.readStore()
 
-read from store() optionally ask for a key entry prop1~~, prop2, prop3~~
+read from store() optionally ask for a key entry prop1
 
-richiede una lettura di una ~~o più~~ prorietà passata come parametro di massimo 1KB
+richiede una lettura di una prorietà passata come parametro di massimo 1KB
 
 quindi il firmwarista a secondo del caso d'uso può creare un tipo di store diverso, fare esempi
 

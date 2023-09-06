@@ -396,6 +396,46 @@ trackle.setReceiveCallback(receive_cb_udp);
 {% endtab %}
 {% endtabs %}
 
+### **Trackle.setRandomCallback**
+
+Imposta una callback per la generazione di un numero random. Se non definita viene utilizzata la funziona rand() che ritorna un numero pseudo-casuale.
+
+{% tabs %}
+{% tab title="C" %}
+```c
+// SINTASSI
+typedef uint32_t(randomNumberCallback)(void);
+void trackleSetRandomCallback(Trackle *v, randomNumberCallback *random);
+
+// ESEMPIO
+uint32_t random_callback() {
+    return rand();
+}
+
+trackleSetRandomCallback(c, random_callback);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+// SINTASSI
+typedef uint32_t(randomNumberCallback)(void);
+void setRandomCallback(randomNumberCallback *random);
+
+// ESEMPIO
+uint32_t random_callback() {
+    return rand();
+}
+
+Trackle.setRandomCallback(random_callback);
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="info" %}
+Se l'hardware utilizzato dispone di metodi più sicuri per la generazione di un numero random, è possibile configurarli attraverso questa callback.
+{% endhint %}
+
 ## Connessione
 
 Dopo aver implementato la gestione del socket il client può tentare la connessione al cloud.
@@ -555,3 +595,20 @@ trackle.setFirmwareVersion(PRODUCT_FIRMWARE_VERSION);
 {% endtab %}
 {% endtabs %}
 
+### Trackle.setComponentsList()
+
+Permette di specificare una lista di componenti utilizzati ed inviarli al cloud. Questa informazione può essere utile per monitorare in modo più dettagliato le risorse e le funzionalità disponibili sul dispositivo.
+
+{% tabs %}
+{% tab title="C" %}
+```c
+trackleSetComponentsList(trackle_s, "trackle-library-esp-idf:v2.2.1");
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+Trackle.setComponentsList("trackle-library-esp-idf:v2.2.1");
+```
+{% endtab %}
+{% endtabs %}
