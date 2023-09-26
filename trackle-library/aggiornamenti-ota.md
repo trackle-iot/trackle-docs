@@ -154,21 +154,24 @@ Trackle.setFinishFirmwareUpdateCallback(finish_update);
 
 ## Modalità _SEND\_URL_
 
-Trackle Library fornisce la possibilità di eseguire l'aggiornamento del firmware Over The Air (OTA) in modalità "send\_url". In questa modalità, il firmware viene notificato di un aggiornamento disponibile e vengono fornite le informazioni necessarie per scaricarlo da un URL.
+Trackle Library fornisce la possibilità di eseguire l'aggiornamento del firmware Over The Air (OTA) in modalità "send\_url". In questa modalità, il firmware viene notificato di un aggiornamento disponibile e vengono fornite le informazioni necessarie per scaricarlo da un URL e validarlo.
 
-### Trackle.**firmwareUrlUpdateCallback**
+### Trackle.firmwareUrlUpdateCallback
 
-Questa callback viene chiamata dal Cloud quando è disponibile un aggiornamento firmware con il metodo sendUrl. Contiene un parametro di tipo JSON così composto:
+Questa callback viene chiamata dal Cloud quando è disponibile un aggiornamento firmware con il metodo sendUrl, contiene come parametri:
 
 * url: L'URL da cui scaricare il firmware.
 * crc: Il valore CRC32 del firmware. Può essere utilizzato per verificare l'integrità del firmware scaricato.
-* jobId: Un identificatore univoco per il task di aggiornamento. È utile per il tracciamento degli aggiornamenti OTA da parte del cloud.
 
 {% tabs %}
 {% tab title="C" %}
 ```cpp
-void firmware_ota_url(const char *data) {
-    // parse json file arg data
+bool firmware_ota_url(const char *url, uint32_t crc) {
+    // configure and start update task
+    if (..... ) 
+        return true; // if firmware download i
+    else
+        return false; // if error occured
 }
 
 trackleSetFirmwareUrlUpdateCallback(c, firmware_ota_url);
@@ -177,8 +180,12 @@ trackleSetFirmwareUrlUpdateCallback(c, firmware_ota_url);
 
 {% tab title="C++" %}
 ```cpp
-void firmware_ota_url(const char *data) {
-    // parse json file arg data
+bool firmware_ota_url(const char *url, uint32_t crc) {
+    // configure and start update task
+    if (..... ) 
+        return true; // if firmware download i
+    else
+        return false; // if error occured
 }
 
 Trackle.setFirmwareUrlUpdateCallback(c, firmware_ota_url);
@@ -186,53 +193,35 @@ Trackle.setFirmwareUrlUpdateCallback(c, firmware_ota_url);
 {% endtab %}
 {% endtabs %}
 
-Quando inizia l'aggiornamento, si deve inviare un publish al cloud con _eventName_ `trackle/device/update/status`ed eventData `started,job_id`
+La callback deve ritornare `true` se l'aggiornamento è stato iniziato con successo, `false` in caso di errore.
+
+{% hint style="warning" %}
+Questa callback è **bloccante** per l'esecuzione della libreria e deve ritornare un valore `boolean` il prima possibile.
+
+Va utilizzata come notifica di avvio dell'aggiornamento OTA, ma il download e la scrittura del firmware devono essere eseguiti in un altro task non bloccante.
+{% endhint %}
+
+È possibile, per valutare l'integrità del file scaricato, confrontare il `crc` del file scaricato con quello contenuto nell'argomento della callback. Il crc (Cyclic Redundancy Check) utilizzato è di tipo CRC32 `Little Endian`.
+
+Al termine dell'aggiornamento deve essere chiamato il metodo urlUpdateCompleted, indicando come primo parametro true se l'aggiornamento è stato completato con successo e 0 come secondo parametro, false nel caso in cui si è verificato un problema e l'error code come secondo parametro.
 
 {% tabs %}
 {% tab title="C" %}
 ```cpp
-tracklePublish(c, "trackle/device/update/status", "started,11");
+trackleUrlUpdateCompleted(c, true, 0);
+trackleUrlUpdateCompleted(c, false, 3);
 ```
 {% endtab %}
 
 {% tab title="C++" %}
 ```cpp
-Trackle.publish("trackle/device/update/status", "started,11");
+Trackle.urlUpdateCompleted(true, 0);
+Trackle.urlUpdateCompleted(false, 3);
 ```
 {% endtab %}
 {% endtabs %}
 
-Il firmware deve scaricare il file indicato nell'attributo `url` del json e gestirlo secondo le modalità di aggiornamento messe a disposizione dall'hardware utilizzato.&#x20;
-
-È possibile, per valutare l'integrità del file scaricato, confrontare il `crc` del file scaricato con quello contenuto nell'argomento JSON della callback. Il crc (Cyclic Redundancy Check) utilizzato è di tipo CRC32 `Little Endian`.
-
-Se l'aggiornamento viene completato con successo, deve essere effettuato un publish al cloud con _eventName_ `trackle/device/update/status`ed eventData `success,job_id`
-
-{% tabs %}
-{% tab title="C" %}
-```cpp
-tracklePublish(c, "trackle/device/update/status", "success,11");
-```
-{% endtab %}
-{% endtabs %}
-
-Se al contrario l'aggiornamento fallisce, va inviato un publish al cloud  con _eventName_ `trackle/device/update/status`ed eventData `failed,job_id,error_code`
-
-{% tabs %}
-{% tab title="C" %}
-```cpp
-// ESP_ERR_INVALID_ARG
-tracklePublish(c, "trackle/device/update/status", "failed,11,3");
-```
-{% endtab %}
-
-{% tab title="C++" %}
-```cpp
-// ESP_ERR_INVALID_ARG
-Trackle.publish("trackle/device/update/status", "failed,11,3");
-```
-{% endtab %}
-{% endtabs %}
+La mancata chiamata del metodo `urlUpdateCompleted` comporterà, lato Cloud, il fallimento dell'aggiornamento ota per timeout.
 
 ## Configurazione OTA
 

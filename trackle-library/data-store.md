@@ -24,39 +24,134 @@ Un Data Store è composto da una o più chiavi, che chiamiamo _proprietà,_ defi
 
 write store(json, REPLACE | MERGE)
 
-the structure of the store must be a json file in which every entry must be defined as a property in trackle cloud product&#x20;
+Il parametro della funzione deve essere un file json in cui ogni voce deve essere definita come <mark style="color:purple;">proprietà nel prodotto trackle cloud.</mark>
 
-/\*\* \* Mode of operation of the `set()` method. \*/ enum SetMode { REPLACE, ///< Replace the current ledger data. MERGE ///< Update some of the entries of the ledger data. };
+La dimensione massima di una scrittura in put (mode REPLACE) o in patch (mode MERGE) dello store è di 4Kb.
 
-fa una scrittura in put (mode replace) o in patch (mode merge) dello store cloud di un json di massimo 4KB
+{% tabs %}
+{% tab title="C" %}
+<pre class="language-c"><code class="lang-c"><strong>// SINTASSI
+</strong>typedef enum
+{
+    STORE_WRITE_REPLACE = 0, // sostituisci lo store corrente
+    STORE_WRITE_MERGE        // aggiorna una o più attibuiti dello store
+} Store_Write_Type
+
+<strong>void trackleWriteStore(Trackle * v, const char* data, Store_Write_Type type) {
+</strong>
+// ESEMPIO
+trackleWriteStore(c, "{\"data\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\"}", STORE_WRITE_MERGE);
+trackleWriteStore(c, "{\"data\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\", \"data2\":\"Morbi auctor tincidunt ipsum, et egestas felis posuere a\"}", STORE_WRITE_REPLACE);
+</code></pre>
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+// SINTASSI
+typedef enum
+{
+    STORE_WRITE_REPLACE = 0, // sostituisci lo store corrente
+    STORE_WRITE_MERGE        // aggiorna una o più attibuiti dello store
+} Store_Write_Type
+
+void writeStore(const char* data, Store_Write_Type type) {
+
+// ESEMPIO
+Trackle.writeStore("{\"data\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\"}", STORE_WRITE_MERGE);
+Trackle.writeStore("{\"data\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\", \"data2\":\"Morbi auctor tincidunt ipsum, et egestas felis posuere a\"}", STORE_WRITE_REPLACE);
+```
+{% endtab %}
+{% endtabs %}
 
 ## Trackle.readStore()
 
-read from store() optionally ask for a key entry prop1
+Richiede il valore di una proprietà dsllo store. È necessario passare come argomento la chiave della proprietà che si desidera leggere.&#x20;
 
-richiede una lettura di una prorietà passata come parametro di massimo 1KB
+La dimensione massima della proprietà che è possibile leggere è di 1KB.&#x20;
 
-quindi il firmwarista a secondo del caso d'uso può creare un tipo di store diverso, fare esempi
-
-avvertire che le chiamate possibili di write e read si sommano ai publish per calcolare il limite del rate di picco di 4 messaggi / secondo
+{% hint style="info" %}
+I messaggi di lettura e scrittura dello store rientrano nel rate di invio degli eventi, di circa 1 evento / sec, con picchi fino a 4 messaggi al secondo.
+{% endhint %}
 
 ## Trackle.readStoreCallback()
 
-da implementare per ricevere il valore di una proprietà dello store
+La callback viene chiamata quando viene ricevuta una proprietà dal cloud, richiesta con il metodo readStore:
+
+* key: la chiave della proprietà
+* data: il valore della proprietà
+
+{% tabs %}
+{% tab title="C" %}
+```c
+void read_store_callback(const char* key, const char* data) {
+    // handle data
+}
+
+trackleSetReadStoreCallback(c, read_store_callback);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+void read_store_callback(cons char* data) {
+  // handle json data
+}
+
+Trackle.setReadStoreCallback(read_store_callback);
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="info" %}
+Come documentato nel paragrafo precedente, la dimensione massima del valore della proprietà (data) è di 1KB
+{% endhint %}
 
 ## Trackle.changedStoreCallback()
 
-invia un notifica contenente un array del nome delle proprietà modificate nello store dalle api cloud.
+Questa callback viene chiamata quando il valore di una o più proprietà sullo store è stato aggiornato sul Cloud ed è quindi necessario che il firmware legga il nuovo valore della proprietà:
 
-se un software fa una modifica allo store, se il dispositivo è online riceverà una notifica di change con il nome della proprietà e potrà decidere se leggerla o no in quel momento dallo store.
+* keys: elenco delle chiavi delle proprietà modificate, separate da virgola
 
-se il device è offline alla prima riconnessione riceverà la lista delle proprietà che sono cambiate nel periodo di disconnessione&#x20;
+{% tabs %}
+{% tab title="C" %}
+```c
+void changed_store_callback(const char* keys) {
+    // handle data
+}
 
-&#x20;se il dispositivo successivamente effettua una read dello store o una o più read di una singola proprietà, oppure fa una scrittura di una o più proprietà, quelle proprietà non verranno più notificate ai successivi riavvii. (synched)
+trackleSetChangedStoreCallback(c, changed_store_callback);
+```
+{% endtab %}
 
-fare diagrammi di sequenza per spiegare il meccanismo di synch.
+{% tab title="C++" %}
+```cpp
+void changed_store_callback(const char* keys) {
+    // handle data
+}
 
-se il dispositivo deve recepire un comando o un valore in tempo reale il softwarista userà le post.
+Trackle.setChangedStoreCallback(changed_store_callback);
+```
+{% endtab %}
+{% endtabs %}
+
+Se un software, attraverso le API REST, effettua una modifica allo store, se il dispositivo è online riceverà subito una notifica di change con il nome della proprietà e potrà decidere se eseguire una lettura con la funzione `readStore()` o ignorarla.
+
+Se invece il device è offline, alla prima riconnessione riceverà la lista delle proprietà che sono state modificate nel periodo di disconnessione.
+
+Se il dispositivo successivamente effettua una read dello store o una proprietà, oppure fa una scrittura di una o più proprietà, quelle proprietà non verranno più notificate ai successivi riavvii (in quanto risulteranno _sincronizzate_ con il dispositivo)
+
+<mark style="color:purple;">fare diagrammi di sequenza per spiegare il meccanismo di synch.</mark>
+
+{% hint style="info" %}
+Se è necessario che il dispositivo riceva un comando in tempo reale, solamente se è online, è consigliabile utilizzare una Trackle POST.
+{% endhint %}
+
+## Modalità di utilizzo dello store
+
+In funzione delle necessità, è possibile utilizzare lo in diverse modalità:
+
+* SOLA SCRITTURA: se lo store è utilizzato solamente per rendere disponibili dei dati in cloud attraverso le API REST ma non è necessario leggerli / riceverli dal dispositivo, è possibile creare e scrivere singolarmente le proprietà. In questo modo ogni proprietà può avere una dimensione massima di 4KB ed è possibile gestire store di grandi dimensioni.
+* SOLA LETTURA o LETTURA E SCRITTURA: nel caso in cui il dispositivo abbia la necessità di leggere lo store, è imporante ricordare che la dimensione massima di una proprietà in lettura è di 1KB. Potrebbe quindi essere possibile scrivere più chiavi con una singola write, in quanto la dimensione della singola scrittura può arrivare a 4KB, prestando sempre attenzione a non superare la dimensione di 1KB per la singola proprietà.
 
 
 

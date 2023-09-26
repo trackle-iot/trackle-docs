@@ -14,7 +14,7 @@ layout:
 
 # Funzionalità cloud
 
-## Trackle.get()
+## Trackle.get
 
 Espone una _funzione che ritorna un valore_ alle API Cloud che può essere chiamata attraverso una richiesta  `GET /v1/devices/{DEVICE_ID}/{REQUEST}` . Ritorna il valore `true`quando la funzione è stata registrata.
 
@@ -24,51 +24,111 @@ Espone una _funzione che ritorna un valore_ alle API Cloud che può essere chiam
 {% tab title="C" %}
 ```c
 // SINTASSI
-bool trackleGet(Trackle *v, const char *varKey, void *(*fn)(const char *), Data_TypeDef type) DYNLIB;
+typedef bool (*user_variable_bool_cb_t)(const char *paramString);
+typedef int (*user_variable_int_cb_t)(const char *paramString);
+typedef double (*user_variable_double_cb_t)(const char *paramString);
+typedef const char *(*user_variable_char_cb_t)(const char *paramString);
+typedef const char *(*user_variable_json_cb_t)(const char *paramString);
 
-// ESEMPIO
-void *myCallbackFunction(const char *args) {
-    sprintf(cloudNumberMessage, "The number is %d !", cloudNumber);
-    return cloudNumberMessage;
+bool trackleGet(Trackle *v, const char *varKey, void* varCb, Data_TypeDef type);
+
+// ESEMPI
+bool myBoolCb(const char *args) {
+    return true;
 }
 
-bool success = trackleGet(trackle_s, "temperatura", myCallbackFunction, VAR_FLOAT);
+int myIntCb(const char *args) {
+    return 42;
+}
 
+double myDoubleCb(const char *args) {
+    return 1.21;
+}
+
+const char* myStringCb(const char *args) {
+    return "Hasta la vista, baby.";
+}
+
+const char* myJsonCb(const char *args) {
+    return "{"
+        "\"title\": \"The Hangover\","
+        "\"director\": \"Todd Phillips\","
+        "\"year\": \"2009\","
+        "\"genre\": \"Comedy\""
+    "}";
+}
+
+bool success = trackleGet(trackle_s, "showMeYouLearnedKungFu", myBoolCb, VAR_BOOL);
+bool success = trackleGet(trackle_s, "answerTofundamentalQuestion", myIntCb, VAR_INT);
+bool success = trackleGet(trackle_s, "howManyGigawatts", myDoubleCb, VAR_DOUBLE);
+bool success = trackleGet(trackle_s, "seeYouLater", myStringCb, VAR_STRING);
+bool success = trackleGet(trackle_s, "suggestMeMovie", myJsonCb, VAR_JSON);
 ```
 {% endtab %}
 
 {% tab title="C ++" %}
 ```cpp
 // SINTASSI
-bool get(const char *varKey, user_variable_bool_cb_t fn);
-bool get(const char *varKey, user_variable_int_cb_t fn);
-bool get(const char *varKey, user_variable_double_cb_t fn);
-bool get(const char *varKey, user_variable_char_cb_t fn);
-bool get(const char *varKey, void *(*fn)(const char *), Data_TypeDef type);
+typedef bool (*user_variable_bool_cb_t)(const char *paramString);
+typedef int (*user_variable_int_cb_t)(const char *paramString);
+typedef double (*user_variable_double_cb_t)(const char *paramString);
+typedef const char *(*user_variable_char_cb_t)(const char *paramString);
+typedef const char *(*user_variable_json_cb_t)(const char *paramString);
 
-// ESEMPIO
-void *myCallbackFunction(const char *args) {
-    sprintf(cloudNumberMessage, "The number is %d !", cloudNumber);
-    return cloudNumberMessage;
+bool get(const char *varKey, user_variable_bool_cb_t varCb);
+bool get(const char *varKey, user_variable_int_cb_t varCb);
+bool get(const char *varKey, user_variable_double_cb_t varCb);
+bool get(const char *varKey, user_variable_char_cb_t var);
+bool get(const char *varKey, void *varCb, Data_TypeDef type);
+
+// ESEMPI
+bool myBoolCb(const char *args) {
+    return true;
 }
 
-bool success = Trackle.get("temperatura", myCallbackFunction, VAR_FLOAT);
+int myIntCb(const char *args) {
+    return 42;
+}
+
+double myDoubleCb(const char *args) {
+    return 1.21;
+}
+
+const char* myStringCb(const char *args) {
+    return "Hasta la vista, baby.";
+}
+
+const char* myJsonCb(const char *args) {
+    return "{"
+        "\"title\": \"The Hangover\","
+        "\"director\": \"Todd Phillips\","
+        "\"year\": \"2009\","
+        "\"genre\": \"Comedy\""
+    "}";
+}
+
+bool success = Trackle.get("showMeYouLearnedKungFu", myBoolCb);
+bool success = Trackle.get("answerTofundamentalQuestion", myIntCb);
+bool success = Trackle.get("howManyGigawatts", myDoubleCb);
+bool success = Trackle.get("seeYouLater", myStringCb);
+bool success = Trackle.get("suggestMeMovie", myJsonCb, VAR_JSON);
 ```
 {% endtab %}
 {% endtabs %}
 
-Per registrare una funzione, l'utente deve fornire una chiave `getFuncKey`, che è il nome da utilizzare per effettuara la richiesta GET e un `getFuncName`, che è il reale nome della funzione che sarà utilizzata dalla tua applicazione. La richiesta può ritornare uno tra i quattro tipi di dato supportati:
+Per registrare una GET, l'utente deve fornire una chiave `varKey`, che è il nome da utilizzare per effettuara la richiesta GET e una `varCb`, che è la callbacak implementata dalla tua applicazione. La richiesta può ritornare uno tra i cinque tipi di dato supportati:
 
 * `BOOL`
 * `INT`
 * `DOUBLE`
 * `STRING` (la massima lunghezza è di 1024 bytes)
+* `JSON` (la massima lunghezza è di 1024 bytes)
 
-Possono essere registrate fino a 20 richieste di dati ed il nome di ognuna ha il limite massimo di 32 caratteri.
+Possono essere registrate fino a 20 richieste di dati GET ed il nome di ognuna ha il limite massimo di 32 caratteri.
 
 ## Trackle.post()
 
-Espone una _funzione_ alle API Cloud che può essere chiamata attraverso una richiesta [`POST /v1/devices/{DEVICE_ID}/{FUNCTION}`](broken-reference). Ritorna il valore `true`quando la funzione è stata registrata.
+Espone una _funzione_ alle API Cloud che può essere chiamata attraverso una richiesta `POST /v1/devices/{DEVICE_ID}/{FUNCTION}.` Ritorna il valore `true`quando la funzione è stata registrata.
 
 `Trackle.post` permette di eseguire codice sul dispositivo da una chiamata alle API Cloud. Tipicamente si utilizza questa funzionalità quando si vuole controllare qualcosa sul dispositivo per es. accendere un LED, far suonare un buzzer o controllare una funzione del firmware da Cloud.
 
@@ -76,37 +136,51 @@ Espone una _funzione_ alle API Cloud che può essere chiamata attraverso una ric
 {% tab title="C" %}
 ```c
 // SINTASSI
-bool tracklePost(Trackle *v, const char *funcKey, user_function_int_char_t *func, Function_PermissionDef permission) DYNLIB;
+bool tracklePost(Trackle *v, const char *funcKey, user_function_int_char_t *funcCb, Function_PermissionDef permission);
 
 // ESEMPIO
-int funcName(String extra) {
+int startHack(const char* arg) {
+  .....
+  return -1;
+}
+
+int sendVirus(const char* arg) {
+  .....
   return 1;
 }
 
-bool success = TracklePost(trackle_s, "funcKey", funcName, ALL_USERS);
+bool success = TracklePost(trackle_s, "hackNORAD", startHack, OWNER_ONLY);
+bool success = TracklePost(trackle_s, "sendVirusToAlienShuttle", sendVirus, ALL_USERS);
 ```
 {% endtab %}
 
 {% tab title="C ++" %}
 ```cpp
 // SINTASSI
-bool post(const char *funcKey, user_function_int_char_t *func, Function_PermissionDef permission = ALL_USERS);
+bool post(const char *funcKey, user_function_int_char_t *funcCb, Function_PermissionDef permission = ALL_USERS);
 
 // ESEMPIO
-int funcName(String extra) {
+int startHack(const char* arg) {
+  .....
   return 1;
 }
 
-bool success = Trackle.post("funcKey", funcName, ALL_USERS);
+int sendVirus(const char* arg) {
+  .....
+  return 1;
+}
+
+bool success = Trackle.post("hackNORAD", startHack, OWNER_ONLY);
+bool success = Trackle.post("sendVirusToAlienShuttle", sendVirus, ALL_USERS);
 ```
 {% endtab %}
 {% endtabs %}
 
-Per registrare una funzione, l'utente deve fornire una chiave `funcKey`, che è il nome da utilizzare per effettuara la chiamata POST e un`funcName`, che è il reale nome della funzione che sarà chiamata dalla tua applicazione. Una funzione ritorna un numero intero; `-1`è solitamente utilizzato per ritornare un errore.
+Per registrare una POST, l'utente deve fornire una chiave `funcKey`, che è il nome da utilizzare per effettuara la chiamata POST e una`funcCb`, che è la callback implementata dalla tua applicazione. Una POST ritorna un numero intero; `-1`è solitamente utilizzato per ritornare un errore.
 
-La funzione esposta accetta come parametro una stringa. Questa ha una lunghezza massima limitata a 1024 caratteri ed è codificata in UTF-8.
+La POST accetta come parametro una stringa. Questa ha una lunghezza massima limitata a 1024 caratteri ed è codificata in UTF-8.
 
-Possono essere registrate fino a 20 funzioni, ognuna delle quali ha un nome di massimo 32 caratteri.
+Possono essere registrate fino a 20 POST, ognuna delle quali ha un nome di massimo 32 caratteri.
 
 _`OWNER_ONLY` flag_
 
@@ -121,8 +195,11 @@ Questa funzionalità permette al Dispositivo di inviare un evento basato su una 
 Un evento Cloud ha le seguenti proprietà:
 
 * nome (1–32 caratteri ASCII)
-* PUBBLICO / PRIVATO
-* dati opzionali fino a 4096 caratteri
+* dati fino a 4096 caratteri
+* ttl default 30 secondi
+* Event\_Type PUBBLICO / PRIVATO
+* Event\_Flags con o senza ACK
+* msg\_key una chiave numerica opzionale
 
 Le variabili di tipo String devono essere UTF-8 encoded. Non puoi inviare data binari o altre tipologie di caratteri tipo ISO-8859-1. Se hai la necessità di inviare dati binari, puoi codificarli un un formato text-based tipo [Base64](https://github.com/rickkas7/Base64RK).
 
@@ -142,7 +219,29 @@ La chiamata a`Trackle.publish()` ritorna `false` quando:
 * è stato superato il rate limit di invio
 * si verifica un errore di rete
 
-Pubblicare un evento privato con un dato nome ma nessun dato.
+_`NO_ACK` flag_
+
+A meno che non sia specificato, un evento viene inviato al cloud come messaggio affidabile. Il Dispositivo aspetta per un acknowledgement dal cloud che il messaggio sia stato ricevuto, ed effettua il reinvio del messaggio fino a 3 volte in background prima di lasciar perdere.
+
+`NO_ACK` flag disabilita questo comportamento di acknowledge/retry ed invia il messaggio una sola volta. Questo riduce il consumo di dati per evento, ma introduce la possibilità che questo non raggiunga mai il cloud.
+
+Per esempio, il `NO_ACK` flag potrebbe essere utile per inviare dei valori, come ad esempio la lettura di sensori, per cui la perdita occasione le di un dato sia tollerabile.
+
+_`WITH_ACK` flag_
+
+Questo flag fa sì che per l'evento inviato sia atteso l'acknowledgement dal Cloud per verificarne l'effettiva ricezione. In caso di mancata ricezione dell'ack entro un timeout prestabilito, se configurata la callback, verrà notificato l'errore.
+
+_MSG\_KEY_
+
+È possibile specificare un parametro numerico aggiuntivo come ultimo argomento. Questo valore numerico verrà inoltrato come parametro alle funzioni di callback `completedPublishCallback` e `sendPublishCallback`. Questo parametro può essere utilizzato per tracciare e identificare i messaggi pubblicati nel cloud, verificando la loro effettiva ricezione e di gestire manualmente la ripubblicazione in caso di errori. Nel caso in cui non sia specificata (o sia passsato il valore `0`), la msg\_key viene generata dalla libreria.
+
+{% hint style="info" %}
+Diversamente da `Trackle.get` e `Trackle.post,`devi chiamare `Trackle.publish` dal loop() (o da una funzione chiamata dal loop).
+{% endhint %}
+
+Pubblicare un evento pubblico, senza ack, con un nome ma nessun contenuto e msg\_key
+
+**Ritorno:** Un `bool` indica il successo: (true o false)
 
 {% tabs %}
 {% tab title="C" %}
@@ -151,78 +250,93 @@ Pubblicare un evento privato con un dato nome ma nessun dato.
 bool tracklePublish(Trackle *v, const char *eventName, const char *data, int ttl, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
 
 // ESEMPIO
-tracklePublish(trackle_s, "front-door", "unlocked", 30, PRIVATE, WITH_ACK, 1);
+bool success = tracklePublish(trackle_s, "Black_Pearl", "", 30, PUBLIC, NO_ACK, 0);
 ```
 {% endtab %}
 
 {% tab title="C ++" %}
 ```cpp
 // SINTASSI
-bool publish(const char *eventName, const char *data, int ttl = DEFAULT_TTL, Event_Type eventType = PUBLIC, Event_Flags eventFlag = EMPTY_FLAGS, uint32_t msg_key = 0);
-bool publish(string eventName, const char *data, int ttl = DEFAULT_TTL, Event_Type eventType = PUBLIC, Event_Flags eventFlag = EMPTY_FLAGS, uint32_t msg_key = 0);
-bool publish(const char *eventName, const char *data, Event_Type eventType, Event_Flags eventFlag = EMPTY_FLAGS, uint32_t msg_key = 0);
-bool publish(string eventName, const char *data, Event_Type eventType, Event_Flags eventFlag = EMPTY_FLAGS, uint32_t msg_key = 0);
 bool publish(const char *eventName);
 bool publish(string eventName);
 
-// ESEMPI
-Trackle.publish("front-door", "unlocked", 30, PRIVATE, WITH_ACK, 1);
-Trackle.publish("front-door", "unlocked", PRIVATE, WITH_ACK, 1);
-Trackle.publish("front-door", "unlocked");
+// ESEMPIO
+bool success = Trackle.publish("Black_Pearl");
 ```
 {% endtab %}
 {% endtabs %}
 
-**Ritorno:** Un `bool` indica il successo: (true o false)
+Pubblicare un evento privato, con ack, con un nome, un contenuto e msg\_key
 
 {% tabs %}
 {% tab title="C" %}
 ```c
-bool success = tracklePublish(trackle_s, "motion-detected", PRIVATE);
-if (!success) {
-  // get here if event publish did not work
-}
+// SINTASSI
+bool tracklePublish(Trackle *v, const char *eventName, const char *data, int ttl, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+
+// ESEMPIO
+bool success = tracklePublish(trackle_s, "Taxi_driver", "You talkin' to me?", 30, PRIVATE, WITH_ACK, 1);
 ```
 {% endtab %}
 
 {% tab title="C ++" %}
 ```cpp
-bool success = Trackle.publish("motion-detected", PRIVATE);
-if (!success) {
-  // get here if event publish did not work
-}
+// SINTASSI
+bool publish(const char *eventName, const char *data, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+bool publish(string eventName, const char *data, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+
+// ESEMPIO
+bool success = Trackle.publish("Taxi_driver", "You talkin' to me?", PRIVATE, WITH_ACK, 1);
 ```
 {% endtab %}
 {% endtabs %}
 
-Pubblicare un evento privato con un nome e un contenuto
+Pubblicare un evento privato, senza ack, con un nome, un contenuto ma senza msg\_key
 
 {% tabs %}
 {% tab title="C" %}
 ```c
-tracklePublish(trackle_s, "temperature", "19 F", PRIVATE);
+// SINTASSI
+bool tracklePublish(Trackle *v, const char *eventName, const char *data, int ttl, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+
+// ESEMPIO
+bool success = tracklePublish(trackle_s, "The_Godfather", "I'll make him an offer he can't refuse.", 30, PRIVATE, NO_ACK, 0);
 ```
 {% endtab %}
 
 {% tab title="C ++" %}
 ```cpp
-Trackle.publish("temperature", "19 F", PRIVATE);
+// SINTASSI
+bool publish(const char *eventName, const char *data, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+bool publish(string eventName, const char *data, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+
+// ESEMPIO
+bool success = Trackle.publish("The_Godfather", "I'll make him an offer he can't refuse.", PRIVATE, NO_ACK, 0);
 ```
 {% endtab %}
 {% endtabs %}
 
-Pubblicare un evento pubblico con un nome
+Pubblicare un evento publico, senza ack, con un nome, un contenuto, il ttl e una msg\_key
 
 {% tabs %}
 {% tab title="C" %}
 ```c
-tracklePublish(trackle_s, "motion-detected");
+// SINTASSI
+bool tracklePublish(Trackle *v, const char *eventName, const char *data, int ttl, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+
+// ESEMPIO
+bool success = tracklePublish(trackle_s, "McClane", "Yippee-Ki-Yay, Motherf*cker!", 60, PUBLIC, NO_ACK, 11);
 ```
 {% endtab %}
 
 {% tab title="C ++" %}
 ```cpp
-Trackle.publish("front-door-unlocked");
+// SINTASSI
+bool publish(const char *eventName, const char *data, int ttl, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+bool publish(string eventName, const char *data, int ttl, Event_Type eventType, Event_Flags eventFlag, uint32_t msg_key);
+
+// ESEMPIO
+bool success = Trackle.publish("McClane", "Yippee-Ki-Yay, Motherf*cker!", 60, PUBLIC, NO_ACK, 11);
 ```
 {% endtab %}
 {% endtabs %}
@@ -239,74 +353,6 @@ event: motion-detected
 data: {"data":"23:23:44","ttl":"60","published_at":"2014-05-28T19:20:34.638Z","deviceid":"0123456789abcdef"}
 ```
 
-_`NO_ACK` flag_
-
-A meno che non sia specificato, un evento viene inviato al cloud come messaggio affidabile. Il Dispositivo aspetta per un acknowledgement dal cloud che il messaggio sia stato ricevuto, ed effettua il reinvio del messaggio fino a 3 volte in background prima di lasciar perdere.
-
-`NO_ACK` flag disabilita questo comportamento di acknowledge/retry ed invia il messaggio una sola volta. Questo riduce il consumo di dati per evento, ma introduce la possibilità che questo non raggiunga mai il cloud.
-
-Per esempio, il `NO_ACK` flag potrebbe essere utile per inviare dei valori, come ad esempio la lettura di sensori, per cui la perdita occasione le di un dato sia tollerabile.
-
-{% tabs %}
-{% tab title="C" %}
-```c
-float temperature = sensor.readTemperature();  // by way of example, not part of the API
-TracklePublish(trackle_s, "t", String::format("%.2f",temperature), NO_ACK);  // make sure to convert to const char * or String
-TracklePublish(trackle_s, "t", String::format("%.2f",temperature), PRIVATE, NO_ACK);
-```
-{% endtab %}
-
-{% tab title="C ++" %}
-```cpp
-float temperature = sensor.readTemperature();  // by way of example, not part of the API
-Trackle.publish("t", String::format("%.2f",temperature), NO_ACK);  // make sure to convert to const char * or String
-Trackle.publish("t", String::format("%.2f",temperature), PRIVATE, NO_ACK);
-```
-{% endtab %}
-{% endtabs %}
-
-_`WITH_ACK` flag_
-
-Questo flag fa sì che `Trackle.publish()` ritorni solo dopo aver ricevuto l'acknowledgement che l'evento pubblicato sia stato ricevuto dal Cloud.
-
-{% tabs %}
-{% tab title="C" %}
-```c
-TracklePublish(trackle_s, "motion-detected", NULL, WITH_ACK);
-TracklePublish(trackle_s, "motion-detected", NULL, PRIVATE, WITH_ACK);             
-```
-{% endtab %}
-
-{% tab title="C ++" %}
-```cpp
-Trackle.publish("motion-detected", NULL, WITH_ACK);
-Trackle.publish("motion-detected", NULL, PRIVATE, WITH_ACK);
-```
-{% endtab %}
-{% endtabs %}
-
-Pubblicare un evento privato affidabile con un nome, un contenuto e un codice univoco.
-
-{% tabs %}
-{% tab title="C" %}
-```c
-float temperature = sensor.readTemperature();
-TracklePublish(trackle_s, "t", String::format("%.2f",temperature), PRIVATE, WITH_ACK, "32h4bhj43");
-```
-{% endtab %}
-
-{% tab title="C++" %}
-```cpp
-float temperature = sensor.readTemperature();
-Trackle.publish("t", String::format("%.2f",temperature), PRIVATE, WITH_ACK, "32h4bhj43");
-```
-{% endtab %}
-{% endtabs %}
-
-{% hint style="info" %}
-Diversamente da `Trackle.get` e `Trackle.post,`devi chiamare `Trackle.publish` dal loop() (o da una funzione chiamata dal loop).
-{% endhint %}
-
 ## Trackle.subscribe()
 
 Sottoscrive ad un evento pubblicato da un dispositivo. Ritorna un valore `boolean` indicante il successo della sottoscrizione.
@@ -317,7 +363,7 @@ Questa funzionalità permette ai dispositivo di parlarsi tra loro. Ad esempio un
 {% tab title="C" %}
 ```c
 // SINTASSI
-bool trackleSubscribe(Trackle *v, const char *eventName, EventHandler handler, Subscription_Scope_Type scope, const char *deviceID)
+bool trackleSubscribe(Trackle *v, const char *eventName, EventHandler handler, Subscription_Scope_Type scope, const char *deviceID);
 
 // ESEMPIO
 int i = 0;
@@ -336,7 +382,7 @@ void myHandler(const char *event, const char *data)
 
 int main()
 {
-  trackleSubscribe(trackle_s, "temperature", myHandler, ALL_DEVICES, "");
+  trackleSubscribe(trackle_s, "inception", myHandler, ALL_DEVICES, "");
   while(1) {
     trackleLoop();
   }
@@ -370,7 +416,7 @@ void myHandler(const char *event, const char *data)
 
 int main()
 {
-  Trackle.subscribe("temperature", myHandler);
+  Trackle.subscribe("inception", myHandler);
   while(1) {
     Trackle.loop();
   }
@@ -432,7 +478,7 @@ La libreria permette agli sviluppatori di definire il comportamento del firmware
 
 ### Trackle.**sendPublishCallback**
 
-chiamata ogni volta in cui viene eseguito un [**publish**](broken-reference). Come parametri, oltre al nome dell'evento e al contenuto, viene passata una chiave (che può essere usata come codice del messaggio) e un booleano che specifica se il messaggio è stato effettivamente inviato;
+chiamata ogni volta in cui viene eseguito un [**publish**](broken-reference). Come parametri, oltre al nome dell'evento e al contenuto, viene passata la msg\_key (l'ultimo parametro della funzione publish), che può essere usata come codice del messaggio. e un booleano che specifica se il messaggio è stato effettivamente inviato;
 
 {% tabs %}
 {% tab title="C" %}
@@ -442,24 +488,12 @@ typedef void(publishSendCallback)(const char *eventName, const char *data, uint3
 void trackleSetSendPublishCallback(Trackle *v, publishSendCallback *publish);
 
 // ESEMPIO
-void callback_send_publish(const char *eventName, const char *data, int ttl, string key, bool published) {
-    printf("Event: %s, key: %s", (published ? "cache" : "republish"), key.c_str());
-    
-    if(offline_db) {
-        printf("Saving event in db %s, key: %s", (published ? "cache" : "republish"), key.c_str());
-
-        string name(eventName);
-        string content(data);
-        string db_data ="{\"event\": \"" + name + "\", \"data\": " + content + ", \"key\": \"" + key + "\" , \"ttl\": " + to_string(ttl) + " }";
-
-        if(published) // salvo in cahce
-            offline_db->save(0, key, db_data);
-        else // salvo in db offline per reinviare
-            offline_db->save(1, key, db_data);
-    }
+void callback_send_publish(const char *eventName, const char *data, uint32_t msg_key, bool published) {
+    printf("Event: %s, key: %d", (published ? "cache" : "republish"), msg_key);
+    ...
 }
 
-trackleSetSendPublishCallback(c, callback_send_publish);
+trackleSetSendPublishCallback(trackle_s, callback_send_publish);
 ```
 {% endtab %}
 
@@ -470,21 +504,9 @@ typedef void(publishSendCallback)(const char *eventName, const char *data, uint3
 void setSendPublishCallback(publishSendCallback *publish);
 
 // ESEMPIO
-void callback_send_publish(const char *eventName, const char *data, int ttl, string key, bool published) {
-    printf("Event: %s, key: %s", (published ? "cache" : "republish"), key.c_str());
-    
-    if(offline_db) {
-        printf("Saving event in db %s, key: %s", (published ? "cache" : "republish"), key.c_str());
-
-        string name(eventName);
-        string content(data);
-        string db_data ="{\"event\": \"" + name + "\", \"data\": " + content + ", \"key\": \"" + key + "\" , \"ttl\": " + to_string(ttl) + " }";
-
-        if(published) // salvo in cahce
-            offline_db->save(0, key, db_data);
-        else // salvo in db offline per reinviare
-            offline_db->save(1, key, db_data);
-    }
+void callback_send_publish(const char *eventName, const char *data, uint32_t msg_key, bool published) {
+    printf("Event: %s, key: %d", (published ? "cache" : "republish"), msg_key);
+    ...
 }
 
 Trackle.setSendPublishCallback(callback_send_publish);
@@ -494,7 +516,10 @@ Trackle.setSendPublishCallback(callback_send_publish);
 
 ### Trackle.**completedPublishCallback**
 
-chiamata alla ricezione dell'ack al publish o se il publish fallisce per timeout;
+Chiamata alla ricezione dell'ack al publish o se il publish fallisce per timeout.&#x20;
+
+* Se error è uguale a 0, significa che il publish è stato eseguito con successo ed è stato ricevuto l'ack dal server, in caso contrario si è verificato un errore ed il publish non è andato a buon fine;
+* il puntatore a callbackData contiene la msg\_key, ovvero l'ultimo parametro passato alla funzione publish().
 
 {% tabs %}
 {% tab title="C" %}
@@ -505,24 +530,11 @@ void trackleSetCompletedPublishCallback(Trackle *v, publishCompletionCallback *p
 
 // ESEMPIO
 void callback_complete_publish(int error, const void* data, void* callbackData, void* reserved) {
-    uint32_t *b = (uint32_t*)callbackData;
-    char str[20]; snprintf(str, sizeof str, "%lu", (unsigned long)b);
-    string del_key(str);
-
-    if(error == 0){
-        printf("ACK received from cloud: %s", del_key.c_str());
-        ...
-    } else {
-        printf("ACK not received from cloud: %s", del_key.c_str());
-        if(error == SYSTEM_ERROR_TIMEOUT) {
-            printf("Publish TIMEOUT: %s", del_key.c_str());
-        } else {
-            printf("Publish UNDEFINED ERROR: %s", del_key.c_str());
-        }
-    }
+    uint32_t *msg_key = (uint32_t*)callbackData;
+    ...
 }
 
-trackleSetCompletedPublishCallback(c, callback_complete_publish);
+trackleSetCompletedPublishCallback(trackle_s, callback_complete_publish);
 ```
 {% endtab %}
 
@@ -534,21 +546,8 @@ void setCompletedPublishCallback(publishCompletionCallback *publish);
 
 // ESEMPIO
 void callback_complete_publish(int error, const void* data, void* callbackData, void* reserved) {
-    uint32_t *b = (uint32_t*)callbackData;
-    char str[20]; snprintf(str, sizeof str, "%lu", (unsigned long)b);
-    string del_key(str);
-
-    if(error == 0){
-        printf("ACK received from cloud: %s", del_key.c_str());
-        ...
-    } else {
-        printf("ACK not received from cloud: %s", del_key.c_str());
-        if(error == SYSTEM_ERROR_TIMEOUT) {
-            printf("Publish TIMEOUT: %s", del_key.c_str());
-        } else {
-            printf(Publish UNDEFINED ERROR: %s", del_key.c_str());
-        }
-    }
+    uint32_t *msg_key = (uint32_t*)callbackData;
+    ...
 }
 
 Trackle.setCompletedPublishCallback(callback_complete_publish);
@@ -572,7 +571,7 @@ void signal_cb(bool on, unsigned int param, void* reserved) {
     printf("signal_cb: %d %d\n", on, param);
 }
 
-trackleSetSignalCallback(c, signal_cb);
+trackleSetSignalCallback(trackle_s, signal_cb);
 ```
 {% endtab %}
 
@@ -610,7 +609,7 @@ void system_time_cb(time_t time, unsigned int param, void*)
     printf("Server time is %lld\n", (long long)time);
 }
 
-trackleSetSystemTimeCallback(c, system_time_cb);
+trackleSetSystemTimeCallback(trackle_s, system_time_cb);
 ```
 {% endtab %}
 
