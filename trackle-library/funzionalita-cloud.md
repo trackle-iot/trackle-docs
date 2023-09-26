@@ -25,19 +25,18 @@ Espone una _funzione che ritorna un valore_ alle API Cloud che può essere chiam
 ```c
 // SINTASSI
 typedef bool (*user_variable_bool_cb_t)(const char *paramString);
-typedef int (*user_variable_int_cb_t)(const char *paramString);
+typedef int (*user_variable_int32_cb_t)(const char *paramString);
 typedef double (*user_variable_double_cb_t)(const char *paramString);
 typedef const char *(*user_variable_char_cb_t)(const char *paramString);
-typedef const char *(*user_variable_json_cb_t)(const char *paramString);
 
-bool trackleGet(Trackle *v, const char *varKey, void* varCb, Data_TypeDef type);
+bool trackleGet(Trackle *v, const char *varKey, void *(*varCb)(const char *), Data_TypeDef type);
 
 // ESEMPI
 bool myBoolCb(const char *args) {
     return true;
 }
 
-int myIntCb(const char *args) {
+int32_t myIntCb(const char *args) {
     return 42;
 }
 
@@ -70,23 +69,22 @@ bool success = trackleGet(trackle_s, "suggestMeMovie", myJsonCb, VAR_JSON);
 ```cpp
 // SINTASSI
 typedef bool (*user_variable_bool_cb_t)(const char *paramString);
-typedef int (*user_variable_int_cb_t)(const char *paramString);
+typedef int (*user_variable_int32_cb_t)(const char *paramString);
 typedef double (*user_variable_double_cb_t)(const char *paramString);
 typedef const char *(*user_variable_char_cb_t)(const char *paramString);
-typedef const char *(*user_variable_json_cb_t)(const char *paramString);
 
 bool get(const char *varKey, user_variable_bool_cb_t varCb);
 bool get(const char *varKey, user_variable_int_cb_t varCb);
 bool get(const char *varKey, user_variable_double_cb_t varCb);
 bool get(const char *varKey, user_variable_char_cb_t var);
-bool get(const char *varKey, void *varCb, Data_TypeDef type);
+bool get(const char *varKey, void *(*varCb)(const char *), Data_TypeDef type);
 
 // ESEMPI
 bool myBoolCb(const char *args) {
     return true;
 }
 
-int myIntCb(const char *args) {
+int32_t myIntCb(const char *args) {
     return 42;
 }
 
@@ -116,10 +114,10 @@ bool success = Trackle.get("suggestMeMovie", myJsonCb, VAR_JSON);
 {% endtab %}
 {% endtabs %}
 
-Per registrare una GET, l'utente deve fornire una chiave `varKey`, che è il nome da utilizzare per effettuara la richiesta GET e una `varCb`, che è la callbacak implementata dalla tua applicazione. La richiesta può ritornare uno tra i cinque tipi di dato supportati:
+Per registrare una GET, l'utente deve fornire una chiave `varKey` che è il nome da utilizzare per effettuara la richiesta GET e una `varCb` che è la callback implementata dalla sua applicazione. La richiesta può ritornare uno tra i cinque tipi di dato supportati:
 
 * `BOOL`
-* `INT`
+* `INT` (intero con segno a 32 bit)
 * `DOUBLE`
 * `STRING` (la massima lunghezza è di 1024 bytes)
 * `JSON` (la massima lunghezza è di 1024 bytes)
