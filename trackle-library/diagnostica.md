@@ -14,21 +14,29 @@ layout:
 
 # Diagnostica
 
-Trackle Library fornisce dei metodi per inviare lo stato di salute del dispositivo al Cloud. Questa funzionalità permette di monitorare gli eventuali problemi hardware o di rete che si possono presentate una volta che i dispositivi sono stati installati sul campo.&#x20;
+Trackle Library offre un set di metodi per inviare le informazioni relative allo stato di salute del dispositivo al Cloud. Questa funzionalità è essenziale per il monitoraggio dei potenziali problemi hardware o di rete che possono emergere dopo l'installazione dei dispositivi sul campo.
 
-I valori di **HealthCheck** disponibili sono raggruppati in 3 categorie:
+Le informazioni di diagnostica (HealthCheck) sono suddivise in tre categorie: **Cloud**, **System e Network.**  La diagnostica Cloud (numero di connessioni, disconnessioni, roundtrip time, ecc...) viene gestita in maniera autonoma dalla Trackle Library.
 
-**Cloud**: informazioni sullo stato della connessione al cloud:
+Per configurare, valorizzare o aggiornare un dato di diagnostica deve essere chiamata la funzione specifica della categoria (**System** o **Network**), indicando la "chiave" del parametro (elencate sotto) ed il relativo valore.&#x20;
 
-* **CLOUD\_CONNECTION\_STATUS**: Stato della connessione cloud. Quando si riceve un evento vitale attraverso il Cloud è necessario che sia sempre connesso. I valori possibili sono _disconnected, connecting, connected, disconnecting._
-* **CLOUD\_CONNECTION\_ERROR\_CODE**: Un codice di errore specifico della piattaforma restituito dalla funzione del sistema operativo del dispositivo di basso livello per l'evento di connettività cloud più recente.
-* **CLOUD\_DISCONNECTS**: Il numero di disconnessioni impreviste dal cloud dall'ultimo reset.
-* **CLOUD\_CONNECTION\_ATTEMPTS**: Numero di tentativi effettuati per stabilire la connessione al cloud.
-* **CLOUD\_DISCONNECTION\_REASON**: Ultimo motivo per cui la connessione cloud è stata interrotta. I valori possibili sono _none, error, user, network\_disconnect, listening._
-* **CLOUD\_REPEATED\_MESSAGES**: Il numero di volte in cui un messaggio CoAP è stato reinviato dal dispositivo al cloud a causa della mancata ricezione del messaggio originale.
-* **CLOUD\_UNACKNOWLEDGED\_MESSAGES**: Il numero di messaggi CoAP che sono stati reinviati per il numero massimo di volte dal dispositivo, ancora non riconosciuti dal cloud e quindi eliminati.
-* **CLOUD\_RATE\_LIMITED\_EVENTS**: Il conteggio attuale dei publish che hanno causato un evento di rate limited da quando il dispositivo è stato riavviato.
-* **CLOUD\_COAP\_ROUND\_TRIP**: Il tempo di round-tirp (andata e ritorno) dell'ultimo messaggio inviato al cloud, in millisecondi
+Ad esempio, per aggiornare il numero di tentativi di connessione alla rete e specificare la memoria ram totale del dispositivo, devono essere utilizzati i seguenti comandi:
+
+{% tabs %}
+{% tab title="C" %}
+```c
+trackleDiagnosticNetwork(trackle_s, NETWORK_CONNECTION_ATTEMPTS, 10);
+trackleDiagnosticSystem(trackle_s, SYSTEM_TOTAL_RAM, 10000);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+Trackle.diagnosticNetwork(NETWORK_CONNECTION_ATTEMPTS, 10);
+Tracklr.diagnosticSystem(SYSTEM_TOTAL_RAM, 10000);
+```
+{% endtab %}
+{% endtabs %}
 
 **System**: informazioni sul funzionamento del sistema:
 
@@ -65,30 +73,10 @@ I valori di **HealthCheck** disponibili sono raggruppati in 3 categorie:
 * **NETWORK\_MAC\_ADDRESS\_OUI**: Restituisce il primo componente dell'indirizzo MAC (Organizationally Unique Identifier) associato al dispositivo.
 * **NETWORK\_MAC\_ADDRESS\_NIC**: Restituisce il secondo componente dell'indirizzo MAC (Network Interface Card) associato al dispositivo.
 
-Per valorizzare un parametro di diagnostica va chiamata la funzione relativa alla categoria (**Power, Network** o **System**); questa funzione riceve come parametri l'identificativo (costante) ed il valore a seconda del tipo.
+La diaagnostica del dispositivo può essere inviata al Cloud in modo automatico o manuale. \
+Per configurare l'invio automatico è necessario definire l'intervallo di tempo, in millisecondi, tra due invii consecutivi attraverso la funzione `setPublishHealthCheckInterval(uint32_t interval)`.
 
-{% tabs %}
-{% tab title="C" %}
-```c
-trackleDiagnosticCloud(trackle_s, CLOUD_CONNECTION_ATTEMPTS, 5);
-trackleDiagnosticNetwork(trackle_s, NETWORK_CONNECTION_ATTEMPTS, 10);
-trackleDiagnosticSystem(trackle_s, SYSTEM_TOTAL_RAM, 10000);
-```
-{% endtab %}
-
-{% tab title="C++" %}
-```cpp
-Trackle.diagnosticCloud(CLOUD_CONNECTION_ATTEMPTS, 5);
-Trackle.diagnosticNetwork(NETWORK_CONNECTION_ATTEMPTS, 10);
-Tracklr.diagnosticSystem(SYSTEM_TOTAL_RAM, 10000);
-```
-{% endtab %}
-{% endtabs %}
-
-L'HealthCheck può essere inviato al Cloud in modo automatico o manuale. \
-Per configurare l'invio automatico è necessario definire l'intervallo ti tempo tra due invii consecutivi attraverso la funzione `setPublishHealthCheckInterval(uint32_t interval)`.
-
-L'invio manuale avviene chiamando funzione publishHealthCheck().
+L'invio manuale avviene chiamando funzione `publishHealthCheck().`
 
 {% tabs %}
 {% tab title="C" %}
