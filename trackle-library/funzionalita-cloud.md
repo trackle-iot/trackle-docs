@@ -126,7 +126,7 @@ Possono essere registrate fino a 20 richieste di dati GET ed il nome di ognuna h
 
 _`VAR_KEY`_
 
-Alla funzione viene passato come parametro `varKey`, che rappresenta il nome con cui la variabile è stata registrata nel cloud. Questo approccio consente di implementare una singola callback per tutte le variabili, permettendo di gestire le operazioni da eseguire utilizzando uno `switch-case` basato sul valore di `varKey`.
+Alla callback viene passato come parametro `varKey`, che rappresenta il nome con cui la variabile è stata registrata nel cloud. Questo approccio consente di implementare una singola callback per tutte le variabili, permettendo di gestire le operazioni da eseguire utilizzando uno `switch-case` basato sul valore di `varKey`.
 
 ## Trackle.post()
 
@@ -194,7 +194,7 @@ E' possibile **limitare l'accesso** ad una o più funzioni esposte tramite `Trac
 
 _`FUN_KEY`_
 
-Alla funzione viene passato come parametro `funcKey`, che rappresenta il nome con cui la funzione è stata registrata nel cloud. Questo approccio consente di implementare una singola callback per tutte le funzioni, permettendo di gestire le operazioni da eseguire utilizzando uno `switch-case` basato sul valore di `funcKey`.
+Alla callback viene passato come parametro `funcKey`, che rappresenta il nome con cui la funzione è stata registrata nel cloud. Questo approccio consente di implementare una singola callback per tutte le funzioni, permettendo di gestire le operazioni da eseguire utilizzando uno `switch-case` basato sul valore di `funcKey`.
 
 ## Trackle.publish()
 
