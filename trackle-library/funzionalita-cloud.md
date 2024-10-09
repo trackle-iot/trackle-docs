@@ -24,31 +24,31 @@ Espone una _funzione che ritorna un valore_ alle API Cloud che può essere chiam
 {% tab title="C" %}
 ```c
 // SINTASSI
-typedef bool (*user_variable_bool_cb_t)(const char *paramString);
-typedef int (*user_variable_int32_cb_t)(const char *paramString);
-typedef double (*user_variable_double_cb_t)(const char *paramString);
-typedef const char *(*user_variable_char_cb_t)(const char *paramString);
+typedef bool (*user_variable_bool_cb_t)(const char *paramString, const char* varKey);
+typedef int (*user_variable_int32_cb_t)(const char *paramString, const char* varKey);
+typedef double (*user_variable_double_cb_t)(const char *paramString, const char* varKey);
+typedef const char *(*user_variable_char_cb_t)(const char *paramString, const char* varKey);
 
 bool trackleGet(Trackle *v, const char *varKey, void *(*varCb)(const char *), Data_TypeDef type);
 
 // ESEMPI
-bool myBoolCb(const char *args) {
+bool myBoolCb(const char *args, const char* varKey) {
     return true;
 }
 
-int32_t myIntCb(const char *args) {
+int32_t myIntCb(const char *args, const char* varKey) {
     return 42;
 }
 
-double myDoubleCb(const char *args) {
+double myDoubleCb(const char *args, const char* varKey) {
     return 1.21;
 }
 
-const char* myStringCb(const char *args) {
+const char* myStringCb(const char *args, const char* varKey) {
     return "Hasta la vista, baby.";
 }
 
-const char* myJsonCb(const char *args) {
+const char* myJsonCb(const char *args, const char* varKey) {
     return "{"
         "\"title\": \"The Hangover\","
         "\"director\": \"Todd Phillips\","
@@ -68,10 +68,10 @@ bool success = trackleGet(trackle_s, "suggestMeMovie", myJsonCb, VAR_JSON);
 {% tab title="C ++" %}
 ```cpp
 // SINTASSI
-typedef bool (*user_variable_bool_cb_t)(const char *paramString);
-typedef int (*user_variable_int32_cb_t)(const char *paramString);
-typedef double (*user_variable_double_cb_t)(const char *paramString);
-typedef const char *(*user_variable_char_cb_t)(const char *paramString);
+typedef bool (*user_variable_bool_cb_t)(const char *paramString, const char* varKey);
+typedef int (*user_variable_int32_cb_t)(const char *paramString, const char* varKey);
+typedef double (*user_variable_double_cb_t)(const char *paramString, const char* varKey);
+typedef const char *(*user_variable_char_cb_t)(const char *paramString, const char* varKey);
 
 bool get(const char *varKey, user_variable_bool_cb_t varCb);
 bool get(const char *varKey, user_variable_int_cb_t varCb);
@@ -80,23 +80,23 @@ bool get(const char *varKey, user_variable_char_cb_t var);
 bool get(const char *varKey, void *(*varCb)(const char *), Data_TypeDef type);
 
 // ESEMPI
-bool myBoolCb(const char *args) {
+bool myBoolCb(const char *args, const char* varKey) {
     return true;
 }
 
-int32_t myIntCb(const char *args) {
+int32_t myIntCb(const char *args, const char* varKey) {
     return 42;
 }
 
-double myDoubleCb(const char *args) {
+double myDoubleCb(const char *args, const char* varKey) {
     return 1.21;
 }
 
-const char* myStringCb(const char *args) {
+const char* myStringCb(const char *args, const char* varKey) {
     return "Hasta la vista, baby.";
 }
 
-const char* myJsonCb(const char *args) {
+const char* myJsonCb(const char *args, const char* varKey) {
     return "{"
         "\"title\": \"The Hangover\","
         "\"director\": \"Todd Phillips\","
@@ -124,6 +124,10 @@ Per registrare una GET, l'utente deve fornire una chiave `varKey` che è il nome
 
 Possono essere registrate fino a 20 richieste di dati GET ed il nome di ognuna ha il limite massimo di 32 caratteri.
 
+_`VAR_KEY`_
+
+Alla funzione viene passato come parametro `varKey`, che rappresenta il nome con cui la variabile è stata registrata nel cloud. Questo approccio consente di implementare una singola callback per tutte le variabili, permettendo di gestire le operazioni da eseguire utilizzando uno `switch-case` basato sul valore di `varKey`.
+
 ## Trackle.post()
 
 Espone una _funzione_ alle API Cloud che può essere chiamata attraverso una richiesta `POST /v1/devices/{DEVICE_ID}/{FUNCTION}.` Ritorna il valore `true`quando la funzione è stata registrata.
@@ -134,15 +138,17 @@ Espone una _funzione_ alle API Cloud che può essere chiamata attraverso una ric
 {% tab title="C" %}
 ```c
 // SINTASSI
+typedef int(*user_function_int_char_t)(const char *paramString, bool isOwner, const char* funKey);
+
 bool tracklePost(Trackle *v, const char *funcKey, user_function_int_char_t *funcCb, Function_PermissionDef permission);
 
 // ESEMPIO
-int startHack(const char* arg) {
+int startHack(const char* arg, const char* funKey) {
   .....
   return -1;
 }
 
-int sendVirus(const char* arg) {
+int sendVirus(const char* arg, const char* funKey) {
   .....
   return 1;
 }
@@ -155,15 +161,17 @@ bool success = TracklePost(trackle_s, "sendVirusToAlienShuttle", sendVirus, ALL_
 {% tab title="C ++" %}
 ```cpp
 // SINTASSI
+typedef int(*user_function_int_char_t)(const char *paramString, bool isOwner, const char* funKey);
+
 bool post(const char *funcKey, user_function_int_char_t *funcCb, Function_PermissionDef permission = ALL_USERS);
 
 // ESEMPIO
-int startHack(const char* arg) {
+int startHack(const char* arg, const char* funKey) {
   .....
   return 1;
 }
 
-int sendVirus(const char* arg) {
+int sendVirus(const char* arg, const char* funKey) {
   .....
   return 1;
 }
@@ -183,6 +191,10 @@ Possono essere registrate fino a 20 POST, ognuna delle quali ha un nome di massi
 _`OWNER_ONLY` flag_
 
 E' possibile **limitare l'accesso** ad una o più funzioni esposte tramite `Trackle.post()` al solo proprietario del dispositivo. In questo modo un dispositivo parte di un Prodotto può avere delle funzioni esclusive per il proprietario del dispositivo che non possono essere chiamate dal manutentore o da altri soggetti a cui è stato concesso il permesso di monitorare i dispositivi di Prodotto.
+
+_`FUN_KEY`_
+
+Alla funzione viene passato come parametro `funcKey`, che rappresenta il nome con cui la funzione è stata registrata nel cloud. Questo approccio consente di implementare una singola callback per tutte le funzioni, permettendo di gestire le operazioni da eseguire utilizzando uno `switch-case` basato sul valore di `funcKey`.
 
 ## Trackle.publish()
 

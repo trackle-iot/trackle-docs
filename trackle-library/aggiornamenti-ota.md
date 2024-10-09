@@ -156,7 +156,7 @@ Trackle.setFinishFirmwareUpdateCallback(finish_update);
 
 Trackle Library fornisce la possibilità di eseguire l'aggiornamento del firmware Over The Air (OTA) in modalità "send\_url". In questa modalità, il firmware viene notificato di un aggiornamento disponibile e vengono fornite le informazioni necessarie per scaricarlo da un URL e validarlo.
 
-### Trackle.firmwareUrlUpdateCallback
+### Trackle.otaUpdateCallback
 
 Questa callback viene chiamata dal Cloud quando è disponibile un aggiornamento firmware con il metodo sendUrl, contiene come parametri:
 
@@ -174,7 +174,7 @@ bool firmware_ota_url(const char *url, uint32_t crc) {
         return false; // if error occured
 }
 
-trackleSetFirmwareUrlUpdateCallback(c, firmware_ota_url);
+trackleSetOtaUpdateCallback(c, firmware_ota_url);
 ```
 {% endtab %}
 
@@ -188,7 +188,7 @@ bool firmware_ota_url(const char *url, uint32_t crc) {
         return false; // if error occured
 }
 
-Trackle.setFirmwareUrlUpdateCallback(c, firmware_ota_url);
+Trackle.setOtaUpdateCallback(c, firmware_ota_url);
 ```
 {% endtab %}
 {% endtabs %}
@@ -203,25 +203,25 @@ Va utilizzata come notifica di avvio dell'aggiornamento OTA, ma il download e la
 
 È possibile, per valutare l'integrità del file scaricato, confrontare il `crc` del file scaricato con quello contenuto nell'argomento della callback. Il crc (Cyclic Redundancy Check) utilizzato è di tipo CRC32 `Little Endian`.
 
-Al termine dell'aggiornamento deve essere chiamato il metodo urlUpdateCompleted, indicando come primo parametro true se l'aggiornamento è stato completato con successo e 0 come secondo parametro, false nel caso in cui si è verificato un problema e l'error code come secondo parametro.
+Al termine dell'aggiornamento deve essere chiamato il metodo `setOtaUpdateDone`, che accetta il parametro `error_code`. Impostare `error_code` a 0 per indicare che l'aggiornamento è stato completato con successo. In caso di errore, impostare `error_code` con il valore corrispondente all'errore che si è verificato.
 
 {% tabs %}
 {% tab title="C" %}
 ```cpp
-trackleUrlUpdateCompleted(c, true, 0);
-trackleUrlUpdateCompleted(c, false, 3);
+trackleSetOtaUpdateDone(c, 0);
+trackleSetOtaUpdateDone(c, 3);
 ```
 {% endtab %}
 
 {% tab title="C++" %}
 ```cpp
-Trackle.urlUpdateCompleted(true, 0);
-Trackle.urlUpdateCompleted(false, 3);
+Trackle.setOtaUpdateDone(0);
+Trackle.setOtaUpdateDone(3);
 ```
 {% endtab %}
 {% endtabs %}
 
-La mancata chiamata del metodo `urlUpdateCompleted` comporterà, lato Cloud, il fallimento dell'aggiornamento ota per timeout.
+La mancata chiamata del metodo `setOtaUpdateDone` comporterà, lato Cloud, il fallimento dell'aggiornamento ota per timeout.
 
 ## Configurazione OTA
 
