@@ -138,11 +138,11 @@ Per quanto riguarda il cloud, la chiave privata del cloud viene mantenuta segret
 
 ### Trackle.setDeviceId()
 
-Configura l'ID univoco del dispositivo (_DeviceID_) per questo client ottenuto dalla Console. L'ID dispositivo **deve** essere un numero di 12 byte che identifica univocamente il dispositivo.
+Configura l'ID univoco del dispositivo (_DeviceID_) ottenuto dalla Console. L'ID dispositivo **deve** essere un numero di 12 byte che identifica univocamente il dispositivo.
 
 ### Trackle.setKeys()
 
-Configura la _chiave privata_ per questo client. Non è necessario impostare la chiave pubblica del cloud in quanto è già codificata nella libreria.
+Configura la _chiave privata_ per questo dispositivo. Non è necessario impostare la chiave pubblica del cloud in quanto è già codificata nella libreria.
 
 {% hint style="info" %}
 Per ottenere l'array esadecimale dal file .der della chiave privata scaricata dalla Console è possibile usare questo comando su sistemi unix:
