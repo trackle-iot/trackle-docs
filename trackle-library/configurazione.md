@@ -138,11 +138,17 @@ Per quanto riguarda il cloud, la chiave privata del cloud viene mantenuta segret
 
 ### Trackle.setDeviceId()
 
-Configura l'ID univoco del dispositivo (_DeviceID_) per questo client. L'ID dispositivo **deve** essere un numero di 12 byte che identifica univocamente il dispositivo (es: MCU SN).
+Configura l'ID univoco del dispositivo (_DeviceID_) per questo client ottenuto dalla Console. L'ID dispositivo **deve** essere un numero di 12 byte che identifica univocamente il dispositivo.
 
 ### Trackle.setKeys()
 
 Configura la _chiave privata_ per questo client. Non è necessario impostare la chiave pubblica del cloud in quanto è già codificata nella libreria.
+
+{% hint style="info" %}
+Per ottenere l'array esadecimale dal file .der della chiave privata scaricata dalla Console è possibile usare questo comando su sistemi unix:
+
+`cat private_key.der | xxd -i`
+{% endhint %}
 
 {% tabs %}
 {% tab title="C" %}
@@ -152,7 +158,7 @@ char DEVICE_ID[13] = {0xd1, 0xaf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
 // chiave privata del dispositivo
 const uint8_t PRIVATE_KEY[PRIVATE_KEY_LENGTH] =
-  "\x30\x82\x02\x5B....\x00";
+  {0x30, 0x77, 0x02, 0x01, 0x01, 0x04, ... };
   
 trackleSetDeviceId(trackle_s, DEVICE_ID);
 trackleSetKeys(trackle_s, PRIVATE_KEY);
@@ -166,7 +172,7 @@ char DEVICE_ID[13] = {0xd1, 0xaf, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
 // chiave privata del dispositivo
 const uint8_t PRIVATE_KEY[PRIVATE_KEY_LENGTH] =
-  "\x30\x82\x02\x5B....\x00";
+  {0x30, 0x77, 0x02, 0x01, 0x01, 0x04, ... };
   
 trackle.setDeviceId(DEVICE_ID);
 trackle.setKeys(PRIVATE_KEY);
