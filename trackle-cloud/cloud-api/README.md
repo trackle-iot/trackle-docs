@@ -1,20 +1,6 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Cloud API
 
-Le API Cloud di Trackle sono di tipo [REST](http://en.wikipedia.org/wiki/Representational\_State\_Transfer). REST significa che usiamo l'URL nel modo per cui è stato creato ovvero come "Uniform Resource Locator".&#x20;
+Le API Cloud di Trackle sono di tipo [REST](http://en.wikipedia.org/wiki/Representational_State_Transfer). REST significa che usiamo l'URL nel modo per cui è stato creato ovvero come "Uniform Resource Locator".&#x20;
 
 La risorsa in questione è il **Dispositivo**. Ogni dispositivo diventa un endpoint, che può essere usato per fare una richiesta `GET` e ottenere un valore, o una `POST` per chiamare una funzione remota o una `PUT` per aggiornare il firmware.&#x20;
 
@@ -31,7 +17,7 @@ Quando scriviamo un nome preceduto da `:`, quel nome deve essere sostituito con 
 
 ## Formato
 
-Le API REST accettano richieste in [JSON](https://www.w3schools.com/js/js\_json\_intro.asp) (content type `application/json`) e in [form encoded format](https://en.wikipedia.org/wiki/POST\_\(HTTP\)) (content type `application/x-www-form-urlencoded`). Rispondono sempre con un JSON (content type `application/json`).
+Le API REST accettano richieste in [JSON](https://www.w3schools.com/js/js_json_intro.asp) (content type `application/json`) e in [form encoded format](https://en.wikipedia.org/wiki/POST_\(HTTP\)) (content type `application/x-www-form-urlencoded`). Rispondono sempre con un JSON (content type `application/json`).
 
 ```aspnet
 # Esempio in form encoded format

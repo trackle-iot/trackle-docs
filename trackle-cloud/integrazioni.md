@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Integrazioni
 
 Le integrazioni consentono agli sviluppatori di estendere l'efficacia di Trackle nei loro sistemi esistenti. Forniscono un modo semplice e sicuro per interagire con un servizio basato su Internet.&#x20;
@@ -32,7 +18,7 @@ Inoltre, puoi eseguire semplici manipolazioni dei dati utilizzando i modelli Mou
 
 ## Server-Sent-Events (SSE) <a href="#server-sent-events-sse" id="server-sent-events-sse"></a>
 
-Tradizionalmente, una pagina web deve inviare una richiesta al server per ricevere nuovi dati; cioè, la pagina richiede dati dal server. Con i [_Server-Sent-Events_](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent\_events), è possibile per un server inviare nuovi dati a una pagina web in qualsiasi momento, inviando messaggi alla pagina web. Questi messaggi in arrivo possono essere trattati come un flusso di eventi.
+Tradizionalmente, una pagina web deve inviare una richiesta al server per ricevere nuovi dati; cioè, la pagina richiede dati dal server. Con i [_Server-Sent-Events_](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events), è possibile per un server inviare nuovi dati a una pagina web in qualsiasi momento, inviando messaggi alla pagina web. Questi messaggi in arrivo possono essere trattati come un flusso di eventi.
 
 Il flusso di eventi SSE funziona facendo in modo che il tuo client o server effettui una connessione https (crittografata) in uscita al servizio API REST di Trackle. Questa connessione viene mantenuta aperta e, se arrivano nuovi eventi, vengono immediatamente trasmessi su questo flusso.
 

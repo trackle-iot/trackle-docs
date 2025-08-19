@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Organizzazione
 
 Un'Organizzazione rappresenta un'entità di livello superiore che può possedere molti prodotti, avere un team di utenti e dei _customer_ che possono avere accesso a dispositivi di prodotti diversi, per es. nel caso di utenti di un'App multi prodotto.

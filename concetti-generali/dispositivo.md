@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Dispositivo
 
 Un dispositivo è un hardware basato su MCU (ad es. NodeMCU, Arduino, Prodino, Raspberry Pi, ecc.) oppure un prodotto fisico finito come un termostato o una VMC.

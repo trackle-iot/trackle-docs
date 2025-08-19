@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Utenti
 
 Per iniziare ad utilizzare Trackle è necessario creare un account. Un account corrisponde ad un _utente_ ed è identificato da un indirizzo email. Generalmente un utente di Trackle può essere:

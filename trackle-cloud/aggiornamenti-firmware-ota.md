@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Aggiornamenti firmware OTA
 
 Gli aggiornamenti firmware _over-the-air_ (OTA) sono una componente fondamentale e critica di qualsiasi sistema IoT. Trackle permette agli sviluppatori di eseguire aggiornare OTA sia per un dispositivo singolo che per l'intera flotta di prodotto direttamente dalla console o dalle API REST.
@@ -36,7 +22,7 @@ Dato il rischio associato a un aggiornamento OTA, è fondamentale che gli aggior
 
 ### Comunicazioni crittografate
 
-Tutti i messaggi tra i dispositivi e il cloud sono sempre crittografati, inclusi i file del firmware. Ciò elimina potenziali attacchi _man-in-the-middl_e che cercano di inviare firmware fraudolento al dispositivo.
+Tutti i messaggi tra i dispositivi e il cloud sono sempre crittografati, inclusi i file del firmware. Ciò elimina potenziali attacchi _man-in-the-midd&#x6C;_&#x65; che cercano di inviare firmware fraudolento al dispositivo.
 
 ### **Verifica del mittente**
 
