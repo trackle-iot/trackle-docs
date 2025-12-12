@@ -289,8 +289,6 @@ La firma OTA utilizza una coppia di chiavi **ECC P-256 (secp256r1)**.
 * **La chiave privata** deve essere caricata nella [pagina di configurazione](../concetti-generali/prodotto.md) del prodotto
 * **La chiave pubblica** deve essere incorporata nel firmware del dispositivo e viene usata dalla libreria per verificare la firma.
 
-Per abilitare la verifica della firma è necessario:
-
 ```
 # 1) Generate the private key
 openssl ecparam -name prime256v1 -genkey -noout -out private.pem
