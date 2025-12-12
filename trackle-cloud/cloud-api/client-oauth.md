@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Client OAuth
 
 Un Client OAuth solitamente rappresenta un App o un applicativo di terze parti a cui si vuol dare il permesso di controllare dei dispositivi o un Prodotto. Ognuno può creare i propri client. E' buona norma creare un client per ogni applicazione web e mobile che vuole fare richieste alle API REST.
@@ -22,18 +8,20 @@ Un Client OAuth solitamente rappresenta un App o un applicativo di terze parti a
 
 Gli endpoint di Client OAuth possono essere usati anche come endpoint di Client OAuth per Prodotto sostituendo `/v1/clients` con `/v1/products/:productIdOrSlug/clients`.
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/clients" method="get" summary="Lista dei Client OAuth" %}
-{% swagger-description %}
+## Lista dei Client OAuth
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/clients`
+
 Ottieni una lista dei Client OAuth generati dall'utente autenticato oppure associati ad certo Prodotto
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-ID Prodotto o Slug. 
+#### Path Parameters
 
-_Solo per endpoint Prodotto_
-{% endswagger-parameter %}
+| Name            | Type   | Description                                      |
+| --------------- | ------ | ------------------------------------------------ |
+| productIdOrSlug | string | ID Prodotto o Slug. _Solo per endpoint Prodotto_ |
 
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 [
   {
@@ -46,5 +34,5 @@ _Solo per endpoint Prodotto_
   }
 
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}

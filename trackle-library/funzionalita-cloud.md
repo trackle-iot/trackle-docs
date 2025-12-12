@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Funzionalità cloud
 
 ## Trackle.get
@@ -214,7 +200,7 @@ Un evento Cloud ha le seguenti proprietà:
 Le variabili di tipo String devono essere UTF-8 encoded. Non puoi inviare data binari o altre tipologie di caratteri tipo ISO-8859-1. Se hai la necessità di inviare dati binari, puoi codificarli un un formato text-based tipo [Base64](https://github.com/rickkas7/Base64RK).
 
 {% hint style="info" %}
-Al momento un dispositivo può pubblicare con un rate di circa 1 evento / sec, con picchi fino a 4 messaggi al secondo. Recuperare l'invio di 4 messaggi impiegherà 4 secondi**.**
+Al momento un dispositivo può pubblicare con un rate di circa 1 evento / sec, con picchi fino a 4 messaggi al secondo. Recuperare l'invio di 4 messaggi impiegherà 4 second&#x69;**.**
 {% endhint %}
 
 {% hint style="warning" %}
@@ -351,7 +337,7 @@ bool success = Trackle.publish("McClane", "Yippee-Ki-Yay, Motherf*cker!", 60, PU
 {% endtab %}
 {% endtabs %}
 
-Sottoscrivere a un Server-Sent Events con [Cloud API](broken-reference) per un evento pubblico
+Sottoscrivere a un Server-Sent Events con [Cloud API](/broken/pages/-M0PX-ZaT75QgvEL8ofb#get-a-stream-of-your-events) per un evento pubblico
 
 ```
 # ESEMPIO
@@ -488,7 +474,7 @@ La libreria permette agli sviluppatori di definire il comportamento del firmware
 
 ### Trackle.**sendPublishCallback**
 
-chiamata ogni volta in cui viene eseguito un [**publish**](broken-reference). Come parametri, oltre al nome dell'evento e al contenuto, viene passata la msg\_key (l'ultimo parametro della funzione publish), che può essere usata come codice del messaggio. e un booleano che specifica se il messaggio è stato effettivamente inviato;
+chiamata ogni volta in cui viene eseguito un [**publish**](/broken/pages/-M0SjKxhiCVUMbejE1MV#iotready-publish). Come parametri, oltre al nome dell'evento e al contenuto, viene passata la msg\_key (l'ultimo parametro della funzione publish), che può essere usata come codice del messaggio. e un booleano che specifica se il messaggio è stato effettivamente inviato;
 
 {% tabs %}
 {% tab title="C" %}

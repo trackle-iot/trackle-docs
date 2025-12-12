@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Diagnostica
 
 Trackle Library offre un set di metodi per inviare le informazioni relative allo stato di salute del dispositivo al Cloud. Questa funzionalità è essenziale per il monitoraggio dei potenziali problemi hardware o di rete che possono emergere dopo l'installazione dei dispositivi sul campo.

@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Eventi
 
 I **Dispositivi** inviano eventi al Cloud ogni volta che si connettono e ogni volta che viene chiamato `Trackle.publish()`. E' possibile ricevere gli eventi dei dispositivi attraverso una tecnologia che sfrutta un flusso di dati HTTP chiamata [Server-Sent Events (SSEs)](https://www.w3.org/TR/eventsource/).
@@ -20,196 +6,202 @@ I **Dispositivi** inviano eventi al Cloud ogni volta che si connettono e ogni vo
 Puoi filtrare gli eventi da ricevere specificando un _eventName._ Gli eventi ricevuti saranno limitati a quelli con il filtro specificato. Per esempio specificando il nome evento `temp` saranno ricevuti tutti gli eventi il cui nome inizia con `temp`.
 {% endhint %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/events/[:eventName]" method="get" summary="Ottieni un flusso di eventi pubblici" %}
-{% swagger-description %}
+## Ottieni un flusso di eventi pubblici
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/events/[:eventName]`
+
 Open a stream of Server Sent Events for all public events.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="eventPrefix" type="string" %}
-Filters the stream to only events starting with the specified prefix. Omit to get all events.
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-response status="200" description="" %}
+| Name        | Type   | Description                                                                                   |
+| ----------- | ------ | --------------------------------------------------------------------------------------------- |
+| eventPrefix | string | Filters the stream to only events starting with the specified prefix. Omit to get all events. |
+
+{% tabs %}
+{% tab title="200 " %}
 ```
 :ok
 
 event: temperature
 data: {"data":"25.34","ttl":"60","published_at":"2015-07-18T00:12:18.174Z","coreid":"0123456789abcdef0123456
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices/events/[:eventName]" method="get" summary="Ottieni un flusso di eventi dei tuoi dispositivi" %}
-{% swagger-description %}
+## Ottieni un flusso di eventi dei tuoi dispositivi
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/devices/events/[:eventName]`
+
 Open a stream of Server Sent Events for all public and private events for your devices.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="eventPrefix" type="string" %}
-Filters the stream to only events starting with the specified prefix. Omit to get all events.
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-response status="200" description="" %}
+| Name        | Type   | Description                                                                                   |
+| ----------- | ------ | --------------------------------------------------------------------------------------------- |
+| eventPrefix | string | Filters the stream to only events starting with the specified prefix. Omit to get all events. |
+
+{% tabs %}
+{% tab title="200 " %}
 ```
 :ok
 
 event: temperature
 data: {"data":"25.34","ttl":"60","published_at":"2015-07-18T00:12:18.174Z","coreid":"0123456789abcdef0123456
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices/:deviceID/events/[:eventName]" method="get" summary="Ottieni un flusso di eventi per un dispositivo" %}
-{% swagger-description %}
+## Ottieni un flusso di eventi per un dispositivo
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/devices/:deviceID/events/[:eventName]`
+
 Open a stream of Server Sent Events for all public and private events for the specified device.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="deviceID" type="string" %}
-Device ID
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="path" name="eventPrefix" type="string" %}
-Filters the stream to only events starting with the specified prefix. Omit to get all events.
-{% endswagger-parameter %}
+| Name        | Type   | Description                                                                                   |
+| ----------- | ------ | --------------------------------------------------------------------------------------------- |
+| deviceID    | string | Device ID                                                                                     |
+| eventPrefix | string | Filters the stream to only events starting with the specified prefix. Omit to get all events. |
 
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 :ok
 
 event: temperature
 data: {"data":"25.34","ttl":"60","published_at":"2015-07-18T00:12:18.174Z","coreid":"0123456789abcdef01234567"}
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/products/:productIdOrSlug/devices/events/[:eventName]" method="get" summary="Ottieni un flusso di eventi di un prodotto" %}
-{% swagger-description %}
+## Ottieni un flusso di eventi di un prodotto
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/products/:productIdOrSlug/devices/events/[:eventName]`
+
 Open a stream of Server Sent Events for all public and private events for a product.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-Product ID or Slug
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="path" name="eventPrefix" type="string" %}
-Filters the stream to only events starting with the specified prefix. Omit to get all events
-{% endswagger-parameter %}
+| Name            | Type   | Description                                                                                  |
+| --------------- | ------ | -------------------------------------------------------------------------------------------- |
+| productIdOrSlug | string | Product ID or Slug                                                                           |
+| eventPrefix     | string | Filters the stream to only events starting with the specified prefix. Omit to get all events |
 
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 :ok
 
 event: temperature
 data: {"data":"25.34","ttl":"60","published_at":"2015-07-18T00:12:18.174Z","coreid":"0123456789abcdef01234567"}
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/products/:productIdOrSlug/devices/:deviceID/events/[:eventName]" method="get" summary="Ottieni un flusso di eventi di un dispositivo parte di un prodotto" %}
-{% swagger-description %}
+## Ottieni un flusso di eventi di un dispositivo parte di un prodotto
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/products/:productIdOrSlug/devices/:deviceID/events/[:eventName]`
+
 Open a stream of Server Sent Events scoped to a particular device in a product
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-Product ID or Slug
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="path" name="deviceID" type="string" %}
-Device ID
-{% endswagger-parameter %}
+| Name            | Type   | Description                                                                                  |
+| --------------- | ------ | -------------------------------------------------------------------------------------------- |
+| productIdOrSlug | string | Product ID or Slug                                                                           |
+| deviceID        | string | Device ID                                                                                    |
+| eventPrefix     | string | Filters the stream to only events starting with the specified prefix. Omit to get all events |
 
-{% swagger-parameter in="path" name="eventPrefix" type="string" %}
-Filters the stream to only events starting with the specified prefix. Omit to get all events
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 :ok
 
 event: temperature
 data: {"data":"25.34","ttl":"60","published_at":"2015-07-18T00:12:18.174Z","coreid":"0123456789abcdef01234567"}
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices/events" method="post" summary="Pubblica un evento" %}
-{% swagger-description %}
+## Pubblica un evento
+
+<mark style="color:green;">`POST`</mark> `https://api.trackle.io/v1/devices/events`
+
 Publish an event to your devices stream.
-{% endswagger-description %}
 
-{% swagger-parameter in="body" name="name" type="string" %}
-Event name
-{% endswagger-parameter %}
+#### Request Body
 
-{% swagger-parameter in="body" name="data" type="string" %}
-Event data. Limited to a maximum of 622 bytes
-{% endswagger-parameter %}
+| Name    | Type    | Description                                   |
+| ------- | ------- | --------------------------------------------- |
+| name    | string  | Event name                                    |
+| data    | string  | Event data. Limited to a maximum of 622 bytes |
+| private | boolean | Private or public                             |
 
-{% swagger-parameter in="body" name="private" type="boolean" %}
-Private or public
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "ok": true
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="400" description="" %}
+{% tab title="400 " %}
 ```
 {
   "error": "name not provided",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/products/:productIdOrSlug/events" method="post" summary="Pubblica un evento per un prodotto" %}
-{% swagger-description %}
+## Pubblica un evento per un prodotto
+
+<mark style="color:green;">`POST`</mark> `https://api.trackle.io/v1/products/:productIdOrSlug/events`
+
 Publish an event that is sent to the product's event stream.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-Product ID or Slug
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="body" name="name" type="string" %}
-Event name
-{% endswagger-parameter %}
+| Name            | Type   | Description        |
+| --------------- | ------ | ------------------ |
+| productIdOrSlug | string | Product ID or Slug |
 
-{% swagger-parameter in="body" name="data" type="string" %}
-Event data. Limited to a maximum of 622 bytes
-{% endswagger-parameter %}
+#### Request Body
 
-{% swagger-parameter in="body" name="private" type="boolean" %}
-Private or public
-{% endswagger-parameter %}
+| Name    | Type    | Description                                   |
+| ------- | ------- | --------------------------------------------- |
+| name    | string  | Event name                                    |
+| data    | string  | Event data. Limited to a maximum of 622 bytes |
+| private | boolean | Private or public                             |
 
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "ok": true
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="400" description="" %}
+{% tab title="400 " %}
 ```
 {
   "error": "name not provided",
   "ok": false
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="404" description="" %}
+{% tab title="404 " %}
 ```
 {
   "error": "Product does not exist",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}

@@ -1,24 +1,10 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Autenticazione
 
 I permessi per controllare e comunicare con i tuoi dispositivi sono gestiti con [OAuth 2.0](https://oauth.net/2/). Per poter accedere alle risorse protette OAuth 2.0 devi utilizzare gli **Access Token**. Un Access Token è una stringa che rappresenta la concessione del permesso. Le API Cloud di Trackle generano un Access Token nel formato [JSON Web Token (JWT)](https://jwt.io/).‌
 
 Quando connetti un dispositivo al cloud per la prima volta, questo non avrà alcun **proprietario** quindi nessuno, eccetto nel caso di un dispositivo associato ad un Prodotto, avrà il permesso di controllarlo. Per poter associare un dispositivo ad un account e quindi poterlo controllare è necessario associarlo tramite la **procedura di claim**, direttamente dalla Console o tramite un codice di claim. Dopo questa operazione solo quell'account avrà il permesso di controllare il dispositivo con il suo access token.
 
-Il permesso di accedere alle informazioni di un dispositivo può essere concesso anche ad App di terze parti tramite la creazione di speciali [Client OAuth](broken-reference) tramite i quali è possibile generare degli access token con i permessi per il monitoraggio e il controllo del dispositivo.
+Il permesso di accedere alle informazioni di un dispositivo può essere concesso anche ad App di terze parti tramite la creazione di speciali [Client OAuth](/broken/pages/-M0PWjJm66hrpH_q0C8G) tramite i quali è possibile generare degli access token con i permessi per il monitoraggio e il controllo del dispositivo.
 
 ## Come inviare l'access token nelle richieste alle API <a href="#how-to-send-your-access-token" id="how-to-send-your-access-token"></a>
 
@@ -48,46 +34,28 @@ curl -d access_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCI... \
   https://...
 ```
 
-{% swagger baseUrl="https://api.trackle.io" path="/oauth/token" method="post" summary="Genera un access token" %}
-{% swagger-description %}
-Crea un access token che ti da accesso alle API Cloud. Devi inviare un OAuth Client ID e secret validi in HTTP Basic Auth oppure come parametri 
+## Genera un access token
 
-`client_id`
+<mark style="color:green;">`POST`</mark> `https://api.trackle.io/oauth/token`
 
- e 
+Crea un access token che ti da accesso alle API Cloud. Devi inviare un OAuth Client ID e secret validi in HTTP Basic Auth oppure come parametri `client_id` e `client_secret`. Questo endpoint accetta solo richieste di tipo _form encoded_.
 
-`client_secret`
+#### Headers
 
-. Questo endpoint accetta solo richieste di tipo 
+| Name          | Type   | Description                                                                                  |
+| ------------- | ------ | -------------------------------------------------------------------------------------------- |
+| Authorization | string | HTTP Basic Auth dove lo username è il OAuth client\_id e la password è OAuth client\_secret. |
 
-_form encoded_
+#### Request Body
 
-.
-{% endswagger-description %}
+| Name                                          | Type   | Description                                                             |
+| --------------------------------------------- | ------ | ----------------------------------------------------------------------- |
+| client\_id                                    | string | OAuth client\_id. Richiesto solo se non si usa Authorization header     |
+| client\_secret                                | string | OAuth client\_secret. Richiesto solo se non si usa Authorization header |
+| grant\_type<mark style="color:red;">\*</mark> | string | OAuth grant type `authorization_code` o`client_credentials`             |
 
-{% swagger-parameter in="header" name="Authorization" type="string" required="false" %}
-HTTP Basic Auth dove lo username è il OAuth client_id e la password è OAuth client_secret.
-{% endswagger-parameter %}
-
-{% swagger-parameter in="body" name="client_id" type="string" required="false" %}
-OAuth client_id. Richiesto solo se non si usa Authorization header
-{% endswagger-parameter %}
-
-{% swagger-parameter in="body" name="client_secret" type="string" %}
-OAuth client_secret. Richiesto solo se non si usa Authorization header
-{% endswagger-parameter %}
-
-{% swagger-parameter in="body" name="grant_type" type="string" required="true" %}
-OAuth grant type 
-
-`authorization_code`
-
- o
-
-`client_credentials`
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik...",
@@ -97,48 +65,41 @@ OAuth grant type
   "token_type": "Bearer"
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="400" description="" %}
+{% tab title="400 " %}
 ```
 {
   "error": "{\"error\":\"invalid_grant\",\"error_description\":\"Wrong email or password.\"}",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/oauth/token" method="post" summary="Rigenera un access token (refresh)" %}
-{% swagger-description %}
+## Rigenera un access token (refresh)
+
+<mark style="color:green;">`POST`</mark> `https://api.trackle.io/oauth/token`
+
 Rigenera un access token quando è scaduto.
-{% endswagger-description %}
 
-{% swagger-parameter in="header" name="Authorization" type="string" %}
-HTTP Basic Auth dove lo username è OAuth client_id e la password è OAuth client_secret. Si può usare 
+#### Headers
 
-`iotready:iotready`
-{% endswagger-parameter %}
+| Name          | Type   | Description                                                                                                                |
+| ------------- | ------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Authorization | string | HTTP Basic Auth dove lo username è OAuth client\_id e la password è OAuth client\_secret. Si può usare `iotready:iotready` |
 
-{% swagger-parameter in="body" name="client_id" type="string" %}
-OAuth client_id. Richiesto solo se non si usa Authorization header
-{% endswagger-parameter %}
+#### Request Body
 
-{% swagger-parameter in="body" name="client_secret" type="string" %}
-OAuth client_secret. Richiesto solo se non si usa Authorization header
-{% endswagger-parameter %}
+| Name                                             | Type   | Description                                                             |
+| ------------------------------------------------ | ------ | ----------------------------------------------------------------------- |
+| client\_id                                       | string | OAuth client\_id. Richiesto solo se non si usa Authorization header     |
+| client\_secret                                   | string | OAuth client\_secret. Richiesto solo se non si usa Authorization header |
+| grant\_type<mark style="color:red;">\*</mark>    | string | OAuth grant type. Usare `refresh_token`                                 |
+| refresh\_token<mark style="color:red;">\*</mark> | string | Il refresh token                                                        |
 
-{% swagger-parameter in="body" name="grant_type" type="string" required="true" %}
-OAuth grant type. Usare 
-
-`refresh_token`
-{% endswagger-parameter %}
-
-{% swagger-parameter in="body" name="refresh_token" type="string" required="true" %}
-Il refresh token
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik...",
@@ -147,14 +108,14 @@ Il refresh token
   "token_type": "Bearer"
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="400" description="" %}
+{% tab title="400 " %}
 ```
 {
   "error": "{\"error\":\"invalid_grant\",\"error_description\":\"Unknown or invalid refresh token.\"}",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}

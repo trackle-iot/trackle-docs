@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Limiti alle richieste
 
 Le richieste alle API sono limitate approssimativamente a 10 al secondo verso `api.trackle.io` per ogni IP pubblico. Questo limite è il numero totale di chiamate da un IP pubblico e non dipendono dall'access token utilizzato o dall'endpoint della richiesta.

@@ -1,33 +1,17 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Dispositivi
 
 I **Dispositivi** sono associati al tuo account e possono essere parte di un **Prodotto**. Un Prodotto identifica un gruppo di dispositivi con lo stesso hardware e le stesse funzionalità. Ogni Prodotto ha la sua flotta di dispositivi associati.
 
 Gli endpoint per i dispositivi possono essere usati anche per i dispositivi che sono parte di un prodotto sostituendo `/v1/devices` con `/v1/products/:productIdOrSlug/devices`.
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices" method="get" summary="Lista dispositivi" %}
-{% swagger-description %}
-Ottieni la lista dei dispositivi a cui l'utente autenticato ha accesso. Di default, la lista è ordinata per 
+## Lista dispositivi
 
-`last_heard`
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/devices`
 
- in ordine decrescente.
-{% endswagger-description %}
+Ottieni la lista dei dispositivi a cui l'utente autenticato ha accesso. Di default, la lista è ordinata per `last_heard` in ordine decrescente.
 
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 [
   {
@@ -57,23 +41,29 @@ Ottieni la lista dei dispositivi a cui l'utente autenticato ha accesso. Di defau
   }
 ]
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/products/:productIdOrSlug/devices" method="get" summary="Lista dispositivi associati ad un prodotto" %}
-{% swagger-description %}
+## Lista dispositivi associati ad un prodotto
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/products/:productIdOrSlug/devices`
+
 Ottieni la lista dei dispositivi che sono parte di un Prodotto.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-ID prodotto o Slug
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="query" name="groups" type="string" %}
-Lista di nomi di gruppo separati da virgola per filtrare i risultati mostrando solo i dispostivi appartenenti a quei gruppi
-{% endswagger-parameter %}
+| Name            | Type   | Description        |
+| --------------- | ------ | ------------------ |
+| productIdOrSlug | string | ID prodotto o Slug |
 
-{% swagger-response status="200" description="" %}
+#### Query Parameters
+
+| Name   | Type   | Description                                                                                                                 |
+| ------ | ------ | --------------------------------------------------------------------------------------------------------------------------- |
+| groups | string | Lista di nomi di gruppo separati da virgola per filtrare i risultati mostrando solo i dispostivi appartenenti a quei gruppi |
+
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "customers": [],
@@ -107,34 +97,33 @@ Lista di nomi di gruppo separati da virgola per filtrare i risultati mostrando s
   ]
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="404" description="" %}
+{% tab title="404 " %}
 ```
 {
   "error": "Product not found",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices/:deviceID" method="get" summary="Ottieni informazioni di un dispositivo" %}
-{% swagger-description %}
+## Ottieni informazioni di un dispositivo
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/devices/:deviceID`
+
 Ottieni le informazioni di un singolo dispositivo, incluse le variabili e le funzioni esposte.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="deviceID" type="string" %}
-ID Dispositivo
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-ID Prodotto o Slug. 
+| Name            | Type   | Description                                      |
+| --------------- | ------ | ------------------------------------------------ |
+| deviceID        | string | ID Dispositivo                                   |
+| productIdOrSlug | string | ID Prodotto o Slug. _Solo per endpoint Prodotto_ |
 
-_Solo per endpoint Prodotto_
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "cellular": true,
@@ -163,38 +152,34 @@ _Solo per endpoint Prodotto_
   }
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="404" description="" %}
+{% tab title="404 " %}
 ```
 {
   "error": "No device found",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices/:deviceID/:variableName" method="get" summary="Ottieni il valore di una variabile" %}
-{% swagger-description %}
+## Ottieni il valore di una variabile
+
+<mark style="color:blue;">`GET`</mark> `https://api.trackle.io/v1/devices/:deviceID/:variableName`
+
 Ottieni il valore corrente di una variabile esposta dal dispsitivo. Le variabili possono essere lette da un dispositivo di cui l'utente è proprietario oppure da uno che è parte di un Prodotto di cui l'utente è nel team.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="deviceID" type="string" %}
-ID Dispositivo
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="path" name="variableName" type="string" %}
-Nome variabile
-{% endswagger-parameter %}
+| Name            | Type   | Description                                      |
+| --------------- | ------ | ------------------------------------------------ |
+| deviceID        | string | ID Dispositivo                                   |
+| variableName    | string | Nome variabile                                   |
+| productIdOrSlug | string | ID Prodotto o Slug. _Solo per endpoint Prodotto_ |
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-ID Prodotto o Slug. 
-
-_Solo per endpoint Prodotto_
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "id": "e00fce68c6ea8328e3e3b0c7",
@@ -202,42 +187,40 @@ _Solo per endpoint Prodotto_
   "result": 1
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="404" description="" %}
+{% tab title="404 " %}
 ```
 {
   "error": "Variable not found",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices/:deviceID/:functionName" method="post" summary="Chiama una funzione remota" %}
-{% swagger-description %}
+## Chiama una funzione remota
+
+<mark style="color:green;">`POST`</mark> `https://api.trackle.io/v1/devices/:deviceID/:functionName`
+
 Chiama una funzione remota esposta dal dispositivo passando un parametro di tipo stringa. Le funzioni possono essere chiamate da un dispositivo di cui l'utente è proprietario oppure da uno che è parte di un Prodotto di cui l'utente è nel team.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="deviceID" type="string" %}
-ID Dispositivo
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="path" name="functionName" type="string" %}
-Nome della funzione
-{% endswagger-parameter %}
+| Name            | Type   | Description                                      |
+| --------------- | ------ | ------------------------------------------------ |
+| deviceID        | string | ID Dispositivo                                   |
+| functionName    | string | Nome della funzione                              |
+| productIdOrSlug | string | ID Prodotto o Slug. _Solo per endpoint Prodotto_ |
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-ID Prodotto o Slug. 
+#### Request Body
 
-_Solo per endpoint Prodotto_
-{% endswagger-parameter %}
+| Name | Type   | Description                                                     |
+| ---- | ------ | --------------------------------------------------------------- |
+| args | string | Parametri della funzione con lunghezza massima di 622 caratteri |
 
-{% swagger-parameter in="body" name="args" type="string" %}
-Parametri della funzione con lunghezza massima di 622 caratteri
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "id": "e00fce68c6ea8328e3e3b0c7",
@@ -245,67 +228,68 @@ Parametri della funzione con lunghezza massima di 622 caratteri
   "return_value": 1
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="404" description="" %}
+{% tab title="404 " %}
 ```
 {
   "error": "Function not found",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/devices/:deviceID/ping" method="put" summary="Pinga un dispositivo" %}
-{% swagger-description %}
+## Pinga un dispositivo
 
-{% endswagger-description %}
+<mark style="color:orange;">`PUT`</mark> `https://api.trackle.io/v1/devices/:deviceID/ping`
 
-{% swagger-parameter in="path" name="deviceID" type="string" %}
-ID Dispositivo
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-ID Prodotto or Slug. 
+| Name            | Type   | Description                                       |
+| --------------- | ------ | ------------------------------------------------- |
+| deviceID        | string | ID Dispositivo                                    |
+| productIdOrSlug | string | ID Prodotto or Slug. _Solo per endpoint Prodotto_ |
 
-_Solo per endpoint Prodotto_
-{% endswagger-parameter %}
-
-{% swagger-response status="200" description="" %}
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
   "lastHeard": "2020-02-18T10:28:38.299Z",
   "online": true
 }
 ```
-{% endswagger-response %}
+{% endtab %}
 
-{% swagger-response status="400" description="" %}
+{% tab title="400 " %}
 ```
 {
   "error": "Could not get device for ID. Probably is not connected.",
   "ok": false
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
 
-{% swagger baseUrl="https://api.trackle.io" path="/v1/device_claims" method="post" summary="Genera un codice di claim" %}
-{% swagger-description %}
+## Genera un codice di claim
+
+<mark style="color:green;">`POST`</mark> `https://api.trackle.io/v1/device_claims`
+
 Genera un codice di claim che permette di ad un utente di Trackle di diventare proprietario di un dispositivo e quindi avere il permesso di monitorarlo e controllarlo. Usando l'endpoint di Prodotto è possibile generare un codice di claim per un dispositivo parte di un Prodotto. Il codice deve essere generato usando l'access token dell'utente che vuole diventare proprietario del dispositivo.
-{% endswagger-description %}
 
-{% swagger-parameter in="path" name="productIdOrSlug" type="string" %}
-ID Prodotto o Slug. Solo per endpoint Prodotto
-{% endswagger-parameter %}
+#### Path Parameters
 
-{% swagger-response status="200" description="" %}
+| Name            | Type   | Description                                    |
+| --------------- | ------ | ---------------------------------------------- |
+| productIdOrSlug | string | ID Prodotto o Slug. Solo per endpoint Prodotto |
+
+{% tabs %}
+{% tab title="200 " %}
 ```
 {
     "claim_code":"AAG9+vGe430aUxwQAx8xji/RQspya87h+qZSBikjpo6uGVl/lxH9xR+a3bXZNAx",
     "device_ids":[]
 }
 ```
-{% endswagger-response %}
-{% endswagger %}
+{% endtab %}
+{% endtabs %}
