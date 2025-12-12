@@ -703,7 +703,7 @@ if (!ok) {
 
 #### Note importanti
 
-* Il buffer deve essere **statico o globale**, non locale allo stack.
+* Il buffer deve essere **statico o globale**, non locale (sullo stack).
 *   La dimensione deve essere sufficiente per contenere:
 
     ```
