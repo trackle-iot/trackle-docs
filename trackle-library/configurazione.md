@@ -620,7 +620,7 @@ La scelta tra buffer interno ed esterno dipende dai requisiti di memoria del dis
 
 La dimensione e la capacità del sistema blockwise vengono configurate via macro di compilazione:
 
-#### **1️⃣ TRACKLE\_BLOCKS\_NUMBER**
+#### **TRACKLE\_BLOCKS\_NUMBER**
 
 Numero massimo di blocchi che la libreria può memorizzare internamente.\
 Più blocchi = messaggi più grandi gestibili, ma maggiore consumo di RAM.
@@ -631,7 +631,7 @@ Valori possibili: da 1 a 32 (default 4)
 #define TRACKLE_BLOCKS_NUMBER 16
 ```
 
-#### **2️⃣ TRACKLE\_CONCURRENT\_MESSAGES**
+#### **TRACKLE\_CONCURRENT\_MESSAGES**
 
 Numero massimo di messaggi Blockwise che possono essere gestiti contemporaneamente.
 
