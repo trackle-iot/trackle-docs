@@ -1,17 +1,3 @@
----
-layout:
-  title:
-    visible: true
-  description:
-    visible: false
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
----
-
 # Aggiornamenti OTA
 
 Una delle funzionalità più importanti di una piattaforma IoT è quella di permettere ai produttori di eseguire aggiornamenti firmware _over-the-air_ ai loro dispositivi connessi. Potrebbe essere necessario aggiornare il firmware ad esempio per aggiungere nuove funzionalità o applicare patch di sicurezza.&#x20;
@@ -223,6 +209,104 @@ Trackle.setOtaUpdateDone(3);
 
 La mancata chiamata del metodo `setOtaUpdateDone` comporterà, lato Cloud, il fallimento dell'aggiornamento ota per timeout.
 
+## Modalità _SEND\_URL_ con verifica della firma
+
+Trackle Library supporta la verifica crittografica del firmware durante un aggiornamento OTA in modalità **SEND\_URL.**\
+Questa funzionalità aggiuntiva permette di validare la provenienza e l’integrità del firmware attraverso una firma digitale, aumentando significativamente la sicurezza del processo di aggiornamento.
+
+### Trackle.setOtaVerificationKey
+
+Imposta la chiave pubblica utilizzata per verificare la firma del firmware durante una procedura OTA.
+
+* firmware\_key: array di byte contenente la chiave pubblica in formato DER.
+* length: numero di byte dell’array della chiave.
+
+{% tabs %}
+{% tab title="C" %}
+```cpp
+trackleSetOtaVerificationKey(c, firmware_key, length);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+trackle.setOtaVerificationKey(firmware_key, length);
+```
+{% endtab %}
+{% endtabs %}
+
+Se questa funzione _non_ viene chiamata, la verifica della firma è considerata **non attiva** e `verifyOtaSignature` restituirà 0.
+
+### Trackle.verifyOtaSignature
+
+Questa funzione che verifica la firma ricevuta dal Cloud durante un aggiornamento OTA in modalità SEND\_URL.
+
+* firmware\_hash: hash SHA256 del firmware scaricato.
+* length: unghezza dell’hash (32 byte).
+
+{% tabs %}
+{% tab title="C" %}
+```cpp
+trackleVerifyOtaSignature(c, hash, length);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+trackle.verifyOtaSignature(hash, length);
+```
+{% endtab %}
+{% endtabs %}
+
+**Valori restituiti**
+
+* `1` → Firma verificata correttamente
+* `0` → Verifica saltata (chiave non configurata)
+* `-1` → Errore nella verifica della firma
+
+La funzione deve essere chiamata **dopo il completamento del download** e solo dopo aver calcolato l’hash SHA256 completo del firmware.
+
+### Integrazione della firma con il processo OTA SEND\_URL
+
+Durante un aggiornamento OTA in modalità SEND\_URL:
+
+1. Il Cloud invia:
+   * URL del firmware
+   * CRC32
+   * Firma digitale del firmware
+2. Il dispositivo deve:
+   * Scaricare il firmware
+   * Verificare il CRC32
+   * Calcolare l’hash SHA256 del firmware
+   * Eseguire `verifyOtaSignature()`
+   * In caso di successo → procedere all’installazione -> inviare trackleSetOtaUpdateDone(trackle\_s, 0);&#x20;
+   * In caso di errore → inviare errore OTA trackleSetOtaUpdateDone(trackle\_s, error\_code);
+
+### Generazione della chiave pubblica per la verifica OTA
+
+La firma OTA utilizza una coppia di chiavi **ECC P-256 (secp256r1)**.
+
+* **La chiave privata** deve essere caricata nella [pagina di configurazione](../concetti-generali/prodotto.md) del prodotto
+* **La chiave pubblica** deve essere incorporata nel firmware del dispositivo e viene usata dalla libreria per verificare la firma.
+
+Per abilitare la verifica della firma è necessario:
+
+```
+# 1) Generate the private key
+openssl ecparam -name prime256v1 -genkey -noout -out private.pem
+
+# 2) Generate the public key (PEM format)
+openssl ec -in private.pem -pubout -out public.pem
+
+# 3) Export the public key in DER format
+openssl ec -in private.pem -pubout -outform DER -out public.der
+
+# 4) Convert the DER public key into a C array
+xxd -i public.der > firmware_key.c
+```
+
+> Nota: La chiave pubblica deve essere in formato DER per essere compatibile con il metodo `setOtaVerificationKey()`.
+
 ## Configurazione OTA
 
 Trackle Library permette allo sviluppatore di poter controllare e far eseguire un aggiornamento firmware solo quando il dispositivo è disponibile a farlo.
@@ -237,7 +321,7 @@ La chiamata delle funzioni disableUpdates() ed enableUpdates()  genera un messag
 
 ### Trackle.disableUpdates()
 
-Disabilita gli aggiornamenti OTA sul dispositivo. Se, dopo aver utilizzato questa funzione, si cerca di eseguire un aggiornamento dal Cloud, il dispositivo lo blocca ed invia un errore. Non sarà più possibile effettuare aggiornamenti OTA a meno di [abilitare la forzatura.](broken-reference)
+Disabilita gli aggiornamenti OTA sul dispositivo. Se, dopo aver utilizzato questa funzione, si cerca di eseguire un aggiornamento dal Cloud, il dispositivo lo blocca ed invia un errore. Non sarà più possibile effettuare aggiornamenti OTA a meno di [abilitare la forzatura.](/broken/pages/-M0SjKxhiCVUMbejE1MV#iotready-updatesforced)
 
 Mentre gli aggiornamenti sono disabilitati se si tenta di inviare un aggiornamento firmware al dispositivo questo salverà l'informazione del fatto che c'è un aggiornamento in sospeso. Da quel momento la funzione `Trackle.updatesPending()` ritornerà `true`.
 
