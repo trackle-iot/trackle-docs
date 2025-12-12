@@ -211,7 +211,7 @@ La mancata chiamata del metodo `setOtaUpdateDone` comporterà, lato Cloud, il fa
 
 ## Modalità _SEND\_URL_ con verifica della firma
 
-Trackle Library supporta la verifica crittografica del firmware durante un aggiornamento OTA in modalità **SEND\_URL.**\
+Trackle Library supporta la verifica del firmware durante un aggiornamento OTA in modalità **SEND\_URL.**\
 Questa funzionalità aggiuntiva permette di validare la provenienza e l’integrità del firmware attraverso una firma digitale, aumentando significativamente la sicurezza del processo di aggiornamento.
 
 ### Trackle.setOtaVerificationKey
