@@ -604,3 +604,109 @@ Trackle.setComponentsList("trackle-library-esp-idf:v2.2.1");
 ```
 {% endtab %}
 {% endtabs %}
+
+## Blockwise
+
+Il Blockwise Transfer (RFC 7959) permette di suddividere un messaggio CoAP in blocchi numerati, rendendo possibile la gestione di payload molto grandi durante operazioni di Publish e Get senza superare i limiti del protocollo o della memoria disponibile.
+
+La Trackle Library usa un sistema di buffer per memorizzare i blocchi:
+
+* buffer **interno**, gestito automaticamente
+* buffer **esterno**, gestito dall’utente (consigliato quando si ha poca RAM o si vuole ottimizzare l’allocazione)
+
+La scelta tra buffer interno ed esterno dipende dai requisiti di memoria del dispositivo.
+
+### Configurazione
+
+La dimensione e la capacità del sistema blockwise vengono configurate via macro di compilazione:
+
+#### **1️⃣ TRACKLE\_BLOCKS\_NUMBER**
+
+Numero massimo di blocchi che la libreria può memorizzare internamente.\
+Più blocchi = messaggi più grandi gestibili, ma maggiore consumo di RAM.
+
+Valori possibili: da 1 a 32 (default 4)
+
+```c
+#define TRACKLE_BLOCKS_NUMBER 16
+```
+
+#### **2️⃣ TRACKLE\_CONCURRENT\_MESSAGES**
+
+Numero massimo di messaggi Blockwise che possono essere gestiti contemporaneamente.
+
+Valori possibili: da 1 a 4 (default 4)
+
+```c
+#define TRACKLE_CONCURRENT_MESSAGES 2
+```
+
+### Buffer interno vs buffer esterno
+
+#### **Buffer interno (default)**
+
+* Allocato dalla libreria.
+* Semplice da usare, nessuna configurazione aggiuntiva.
+* Occupa RAM interna alla Trackle Library.
+* Non permette un controllo preciso del consumo di memoria.
+
+#### **Buffer esterno**
+
+* Allocato dall’utente.
+* Permette di utilizzare:
+  * RAM esterna,
+  * RAM statica,
+  * memoria più efficiente.
+* Utile in sistemi embedded a bassa RAM.
+* Si abilita tramite la funzione **trackleSetExternalBuffer()**.
+
+{% tabs %}
+{% tab title="C" %}
+```c
+trackleSetExternalBuffer(Trackle *v, uint8_t *extBuffer, size_t size);
+```
+{% endtab %}
+
+{% tab title="C++" %}
+```cpp
+boo Trackle.setExternalBuffer(uint8_t *extBuffer, size_t size);
+```
+{% endtab %}
+{% endtabs %}
+
+#### Parametri
+
+* **extBuffer** – puntatore al buffer esterno allocato dall’utente
+* **size** – dimensione totale del buffer
+
+#### Valore ritornato
+
+* `true` se il buffer è stato impostato correttamente
+* `false` se la dimensione è insufficiente
+
+```c
+#define EXTERNAL_BUFFER_SIZE 4096 * 4 
+
+uint8_t external_blockwise_buffer[EXTERNAL_BUFFER_SIZE];
+
+// Imposto un buffer esterno per la gestione dei blocchi
+bool ok = trackleSetExternalBuffer(
+    trackle_s,
+    external_blockwise_buffer,
+    EXTERNAL_BUFFER_SIZE
+);
+
+if (!ok) {
+    printf("Errore: buffer esterno troppo piccolo!\n");
+}
+```
+
+#### Note importanti
+
+* Il buffer deve essere **statico o globale**, non locale allo stack.
+*   La dimensione deve essere sufficiente per contenere:
+
+    ```
+    TRACKLE_BLOCKS_NUMBER × TRACKLE_CONCURRENT_MESSAGES * 1024
+    ```
+* Se troppo piccolo, la libreria segnala errore.
