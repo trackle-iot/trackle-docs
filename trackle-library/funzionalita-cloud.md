@@ -114,6 +114,51 @@ _`VAR_KEY`_
 
 Alla callback viene passato come parametro `varKey`, che rappresenta il nome con cui la variabile è stata registrata nel cloud. Questo approccio consente di implementare una singola callback per tutte le variabili, permettendo di gestire le operazioni da eseguire utilizzando uno `switch-case` basato sul valore di `varKey`.
 
+### Supporto a Block2 per GET (dalla versione 4.4.0)
+
+A partire dalla versione **4.4.0** della libreria, Trackle.get supporta la funzionalità **Block2**, consentendo di inviare variabili **STRING** e **JSON** con lunghezza superiore ai 1024 byte, suddividendole automaticamente in più blocchi.
+
+Il supporto Block2 permette la gestione di stringhe lunghe fino alla dimensione massima consentita dai parametri di compilazione del progetto.
+
+#### Parametri di compilazione
+
+È possibile configurare il numero massimo di blocchi e il numero massimo di messaggi concorrenti tramite flag di compilazione:
+
+**◆ TRACKLE\_BLOCKS\_NUMBER**
+
+```c
+#define TRACKLE_BLOCKS_NUMBER 32
+```
+
+Definisce il numero di blocchi per messaggio.\
+Deve essere maggiore di 1 e non deve superare `MAX_BLOCKS_NUMBER` (default: 32).\
+Può essere ridefinito in compilazione tramite:
+
+```
+-D TRACKLE_BLOCKS_NUMBER=<value>
+```
+
+**◆ TRACKLE\_CONCURRENT\_MESSAGES**
+
+```c
+#define TRACKLE_CONCURRENT_MESSAGES 4
+```
+
+Definisce il numero di messaggi concorrenti gestibili simultaneamente.\
+Non deve superare `MAX_CONCURRENT_MESSAGES` (default: 4).\
+Può essere modificato in compilazione tramite:
+
+```
+-D TRACKLE_CONCURRENT_MESSAGES=<value>
+```
+
+#### Note sul funzionamento
+
+* Il dispositivo gestisce automaticamente la segmentazione e ricomposizione dei contenuti.
+* Non è necessaria alcuna modifica alle callback utente.
+* La GET rimane compatibile con le implementazioni precedenti.
+* Le callback JSON/STRING devono semplicemente **restituire** un buffer molto grande.
+
 ## Trackle.post()
 
 Espone una _funzione_ alle API Cloud che può essere chiamata attraverso una richiesta `POST /v1/devices/{DEVICE_ID}/{FUNCTION}.` Ritorna il valore `true`quando la funzione è stata registrata.
@@ -348,6 +393,43 @@ curl -H "Authorization: Bearer {ACCESS_TOKEN_GOES_HERE}" \
 event: motion-detected
 data: {"data":"23:23:44","ttl":"60","published_at":"2014-05-28T19:20:34.638Z","deviceid":"0123456789abcdef"}
 ```
+
+### Supporto a Block1 per Publish (dalla versione 4.2.0)
+
+Dalla versione **4.2.0**, Trackle.publish supporta Block1, permettendo l’invio di dati con lunghezza superiore ai 1024 caratteri.\
+La libreria suddivide automaticamente il payload in blocchi multipli, che vengono inviati sequenzialmente al Cloud.
+
+Questa funzionalità è utile quando è necessario inviare:
+
+* JSON molto grandi
+* strutture serializzate complesse
+* payload generati da sensori ad alta densità dati
+* contenuti codificati in Base64 di dimensioni elevate
+
+#### Parametri di compilazione
+
+Il comportamento del Block1 per publish utilizza gli stessi flag del GET:
+
+**◆ TRACKLE\_BLOCKS\_NUMBER**
+
+Definisce il numero massimo di blocchi per ogni evento pubblicato.
+
+**◆ TRACKLE\_CONCURRENT\_MESSAGES**
+
+Definisce il numero massimo di messaggi in invio contemporaneo.
+
+Possono essere sovrascritti tramite:
+
+```
+-D TRACKLE_BLOCKS_NUMBER=<value>
+-D TRACKLE_CONCURRENT_MESSAGES=<value>
+```
+
+#### Note sul funzionamento
+
+* La segmentazione è completamente trasparente per l’utente.
+* I flag `WITH_ACK` e `NO_ACK` continuano a funzionare senza modifiche.
+* Se viene attivato WITH\_ACK, il completamento dell’ack avviene **solo dopo** la ricezione dell’ultimo blocco da parte del Cloud.
 
 ## Trackle.subscribe()
 
