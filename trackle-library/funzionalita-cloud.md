@@ -130,8 +130,8 @@ Il supporto Block2 permette la gestione di stringhe lunghe fino alla dimensione 
 #define TRACKLE_BLOCKS_NUMBER 32
 ```
 
-Definisce il numero di blocchi per messaggio.\
-Deve essere maggiore di 1 e non deve superare `MAX_BLOCKS_NUMBER` (default: 32).\
+Definisce il numero di blocchi per messaggio (default: 4).\
+Deve essere maggiore di 1 e non deve superare `MAX_BLOCKS_NUMBER` (32).\
 Può essere ridefinito in compilazione tramite:
 
 ```
@@ -144,8 +144,8 @@ Può essere ridefinito in compilazione tramite:
 #define TRACKLE_CONCURRENT_MESSAGES 4
 ```
 
-Definisce il numero di messaggi concorrenti gestibili simultaneamente.\
-Non deve superare `MAX_CONCURRENT_MESSAGES` (default: 4).\
+Definisce il numero di messaggi concorrenti gestibili simultaneamente  (default: 4).\
+Non deve superare `MAX_CONCURRENT_MESSAGES` (4).\
 Può essere modificato in compilazione tramite:
 
 ```
@@ -412,11 +412,11 @@ Il comportamento del Block1 per publish utilizza gli stessi flag del GET:
 
 **◆ TRACKLE\_BLOCKS\_NUMBER**
 
-Definisce il numero massimo di blocchi per ogni evento pubblicato.
+Definisce il numero massimo di blocchi per ogni evento pubblicato  (default: 4).
 
 **◆ TRACKLE\_CONCURRENT\_MESSAGES**
 
-Definisce il numero massimo di messaggi in invio contemporaneo.
+Definisce il numero massimo di messaggi in invio contemporaneo  (default: 4).
 
 Possono essere sovrascritti tramite:
 
