@@ -105,8 +105,8 @@ Per registrare una GET, l'utente deve fornire una chiave `varKey` che è il nome
 * `BOOL`
 * `INT` (intero con segno a 32 bit)
 * `DOUBLE`
-* `STRING` (la massima lunghezza è di 32.768 bytes)
-* `JSON` (la massima lunghezza è di 32.768 bytes)
+* `STRING` (la massima lunghezza è di 32.768 bytes) ([configurazione](configurazione.md#blockwise))
+* `JSON` (la massima lunghezza è di 32.768 bytes) ([configurazione](configurazione.md#blockwise))
 
 Possono essere registrate fino a 20 richieste di dati GET ed il nome di ognuna ha il limite massimo di 32 caratteri.
 
@@ -170,7 +170,7 @@ bool success = Trackle.post("sendVirusToAlienShuttle", sendVirus, ALL_USERS);
 
 Per registrare una POST, l'utente deve fornire una chiave `funcKey`, che è il nome da utilizzare per effettuara la chiamata POST e una`funcCb`, che è la callback implementata dalla tua applicazione. Una POST ritorna un numero intero; `-1`è solitamente utilizzato per ritornare un errore.
 
-La POST accetta come parametro una stringa. Questa ha una lunghezza massima limitata a 32.768 caratteri ed è codificata in UTF-8.
+La POST accetta come parametro una stringa. Questa ha una lunghezza massima limitata a 32.768 caratteri ed è codificata in UTF-8. ([configurazione](configurazione.md#blockwise))
 
 Possono essere registrate fino a 20 POST, ognuna delle quali ha un nome di massimo 32 caratteri.
 
@@ -191,7 +191,7 @@ Questa funzionalità permette al Dispositivo di inviare un evento basato su una 
 Un evento Cloud ha le seguenti proprietà:
 
 * nome (1–32 caratteri ASCII)
-* dati fino a 32.768 caratteri (vedi configurazione)
+* dati fino a 32.768 caratteri ([configurazione](configurazione.md#blockwise))
 * ttl default 30 secondi
 * Event\_Type PUBBLICO / PRIVATO
 * Event\_Flags con o senza ACK
